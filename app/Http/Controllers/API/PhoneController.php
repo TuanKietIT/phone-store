@@ -4,21 +4,21 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Location;
-
-class LocationController extends Controller
+use App\Models\Phone;
+use Illuminate\Support\Facades\Validator;
+class PhoneController extends Controller
 {
     public function index(){
-        $location = Location::orderBy('id','desc')->get();
-        return response()->json($location,200);
+        $phone = Phone::orderBy('id','asc')->get();
+        return response()->json($phone,200);
     }
     public function home(){
-        $location = Location::orderBy('id','asc')->paginate(5);
-        return response()->json($location,200);
+        $phone = Phone::orderBy('id','asc')->paginate(5);
+        return response()->json($phone,200);
     }
     public function showId($id){
-        $location = Location::find($id);
-        return response()->json( $location);
+        $phone = Phone::find($id);
+        return response()->json( $phone);
     }
     public function create(Request $request){
         $validator = Validator::make($request->all(),[
@@ -33,7 +33,7 @@ class LocationController extends Controller
         else{
             $input = $request->all();
     
-            Location::create($input);
+            Phone::create($input);
             return response()->json([
                 'status' => 200,
                 'message' => 'News create sucessfully',
@@ -41,13 +41,13 @@ class LocationController extends Controller
         }
      }
      public function update(Request $request,$id){
-        $location = Location::find($id);
-        if($location){
-            $location->name = $request->input('name');
-            $location->update();
+        $phone = Phone::find($id);
+        if($phone){
+            $phone->name = $request->input('name');
+            $phone->update();
             return response()->json([
                 'status' => 200,
-                'message' => 'Location update sucessfully',
+                'message' => 'Phone update sucessfully',
             ],200);
         }
         else{
@@ -59,19 +59,19 @@ class LocationController extends Controller
      }
      public function delete(Request $request,$id)
      {
-         $location = Location::find($id);
-         if($location){
-             $location->delete();
+        $phone = Phone::find($id);
+        if($phone){
+             $phone->delete();
              return response()->json([
                  'status' => 200,
-                 'message' => 'Location delete sucessfully',
+                 'message' => 'Phone delete sucessfully',
              ],200);
-         }
-         else{
+        }
+        else{
              return response()->json([
                  'status' => 404,
                  'message' => 'Something Went Wrong',
              ],404);
-         }
-     }
+        }
+    }
 }

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\News;
 use Illuminate\Support\Facades\Validator;
-class NewsController extends Controller
+class NewsController extends Controller 
 {
     public function index(){
         $news = News::orderBy('id','asc')->get();

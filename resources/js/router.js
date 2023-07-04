@@ -3,6 +3,9 @@ import {createRouter, createWebHistory} from 'vue-router';
 import Login from './admin/auth/login.vue';
 import Dashboard from './admin/home/component/dashboard.vue';
 import Category from './admin/home/component/category.vue';
+import Phone from './admin/home/component/phone.vue';
+import Laptop from './admin/home/component/laptop.vue';
+import Accessory from './admin/home/component/accessory.vue';
 import Menu from './admin/home/component/menu.vue';
 import Contact from './admin/home/component/contact.vue';
 import Location from './admin/home/component/location.vue';
@@ -10,16 +13,42 @@ import Page from './admin/home/component/page.vue';
 import JobWiki from './admin/home/component/jobWiki.vue';
 import Wiki from './admin/home/component/wiki.vue';
 import News from './admin/home/component/news.vue';
+import Product from './admin/home/component/product.vue';
+import HomePage from './page/home/homePage.vue';
 import Error from './notFound.vue';
 
 
 
 const routes = [
+    //home Pages 
+    {
+        path:'/',
+        name: 'HomePage',
+        component: HomePage,
+    },
     //admin Category 
     {
         path:'/category',
         name: 'Category',
         component: Category,
+    },
+     //admin Category Phone
+     {
+        path:'/category-phone',
+        name: 'Phone',
+        component: Phone,
+    },
+    //admin Category Laptop
+    {
+        path:'/category-laptop',
+        name: 'Laptop',
+        component: Laptop,
+    },
+    //admin Category Accessory
+    {
+        path:'/category-accessory',
+        name: 'Accessory',
+        component: Accessory,
     },
     //admin Menu
     {
@@ -57,6 +86,12 @@ const routes = [
         name: 'Wiki',
         component: Wiki,
     },
+    //admin Post 
+    {
+        path:'/product',
+        name: 'Product',
+        component: Product,
+    },
     //admin News
     {
         path:'/news',
@@ -71,7 +106,7 @@ const routes = [
     },
     //admin Login
     {
-        path:'/login-admin',
+        path:'/admin',
         name: 'Login',
         component: Login,
     },

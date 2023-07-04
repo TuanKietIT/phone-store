@@ -10,6 +10,7 @@ export default defineConfig({
         laravel([
             'resource/scss/app.scss',
             'resources/js/app.js',
+            'resources/js/nice.js',
         ]),
         svgLoader(),
     ],

@@ -12,30 +12,37 @@ class CategoryController extends Controller
         $category = Category::orderBy('id','desc')->get();
         return response()->json($category,200);
     }
+    public function home(){
+        $category = Category::orderBy('id','asc')->paginate(5);
+        return response()->json($category,200);
+    }
     public function showId($id){
         $category = Category::find($id);
         return response()->json( $category);
     }
     public function create(Request $request){
-        $category = Category::create([
-            'title' => $request->title,
-        ]);
-        if($category ){
+        $validator = Validator::make($request->all(),[
+            'name'=> 'required',
+       ]);
+        if($validator->fails()){
             return response()->json([
-                'status' => 200,
-                'message' => 'Category create sucessfully',
-            ],200);
+                'status' => 422,
+                'errors' => $validator->messages(),
+            ],422);
         }
         else{
+            $input = $request->all();
+    
+            Category::create($input);
             return response()->json([
-                'status' => 500,
-                'message' => 'Something Went Wrong',
-            ],500);
+                'status' => 200,
+                'message' => 'News create sucessfully',
+            ],200);
         }
      }
      public function update(Request $request,$id){
          $validator = Validator::make($request->all(),[
-             'title' => 'required',
+             'name' => 'required',
         ]);
         if($validator->fails()){
              return response()->json([
@@ -46,7 +53,7 @@ class CategoryController extends Controller
          else{
              $category = Category::find($id);
              if($category){
-                 $category->title = $request->input('title');
+                 $category->name = $request->input('name');
                  $category->update();
                  return response()->json([
                      'status' => 200,

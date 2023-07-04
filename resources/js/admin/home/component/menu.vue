@@ -42,18 +42,10 @@
      url: yup.string().required(),
   });
 
-  const getMenu = () => {
-    axios.get('/api/menu')
-    .then( response => {
-       menus.value = response.data;
-    })
-  };
-
-
   const createMenu = (values, {resetForm}) => {
     axios.post('/api/menu/create', values)
     .then(response =>{
-        getMenu();
+      getResults();
         resetForm();
     })
   };
@@ -61,7 +53,7 @@
   const updateMenu  = (values, {resetForm}) => {
     axios.post(`/api/menu/update/${form.id}`, values)
     .then(response =>{
-        getMenu();
+      getResults();
         resetForm();
         closeMenu();
     })
@@ -79,10 +71,12 @@
   }
   const deleteMenu  = (menu) => {
     const remove = '/api/menu/delete/' + menu.id;
-    axios.delete(remove)
-    .then(response =>{
-        getMenu();
-    })
+    if(confirm('Are you sure, you want to delete this data?')) {
+        axios.delete(remove)
+        .then(response =>{
+           getResults(); 
+        })
+    }
   };
 
   onMounted(() => {

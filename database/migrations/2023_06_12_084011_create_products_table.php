@@ -15,12 +15,17 @@ return new class extends Migration
             $table->id();
             $table->string('title')->nullable();
             $table->float('price')->nullable();
+            $table->float('number')->nullable();
             $table->string('status')->nullable();
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
+            $table->string('choose')->nullable();
+            $table->text('image1')->nullable();
+            $table->text('image2')->nullable();
+            $table->text('image3')->nullable();
+            $table->text('image4')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('location_id');
-            $table->unsignedBigInteger('image_id');
             $table->timestamps();
         });
     }

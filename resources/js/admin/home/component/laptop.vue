@@ -14,7 +14,7 @@
   import moment from "moment";
 
 
-  const categories = ref([]);
+  const lapTops = ref([]);
 
   const currentPage = ref(1);
   const form = reactive({
@@ -23,16 +23,15 @@
   });
   const errorName = ref('');
 
-  
   const getResults = (page) => {
     if (page === 'undefined') {
       page = 1;
     }
 
     // Using vue-resource as an example
-    axios.get('/api/admin/category?page=' + page)
+    axios.get('/api/admin/laptop?page=' + page)
       .then(response => {
-         categories.value = response.data;
+         lapTops.value = response.data;
          reset();
       })
   };
@@ -43,14 +42,15 @@
      name: yup.string().required(),
   });
 
-   const reset = () => {
+
+  const reset = () => {
       form.name = '';
    }
 
-  const createCategory = () => {
+  const createLaptop = () => {
     const formData = new FormData();
     formData.append('name', form.name);
-    axios.post('/api/category/create', formData,{
+    axios.post('/api/laptop/create', formData,{
         headers: {
             'content-type': 'multipart/form-data'
         }
@@ -73,29 +73,31 @@
     })
   };
 
-  const updateCategory  = (values, {resetForm}) => {
-    axios.post(`/api/category/update/${form.id}`, values)
+
+  const updateLaptop  = (values, {resetForm}) => {
+    axios.post(`/api/laptop/update/${form.id}`, values)
     .then(response =>{
-        getResults();
-        closeCategory();
+      getResults();
+        resetForm();
+        closeLaptop();
     })
   };
   
-  const editCategory = (category) => {
+  const editLaptop = (laptop) => {
       showUpdate.value = true;
-      form.id = category.id;
-      form.name = category.name;
+      form.id = laptop.id;
+      form.name = laptop.name;
   }
  
-  const closeCategory = () => {
+  const closeLaptop = () => {
       showUpdate.value = false
   }
-  const deleteCategory  = (category) => {
-    const remove = '/api/category/delete/' + category.id;
+  const deleteLaptop  = (laptop) => {
+    const remove = '/api/laptop/delete/' + laptop.id;
     if(confirm('Are you sure, you want to delete this data?')) {
         axios.delete(remove)
         .then(response =>{
-           getResults();
+           getResults(); 
         })
     }
   };
@@ -118,7 +120,7 @@
                 <span class="px-10 pt-2">Thêm danh mục phụ kiện</span>
                 <div class="flex justify-between px-10 pt-2 ">
                     <input type="text" name="name" v-model="form.name" :class="{'is-invalid': errorName}" class="round-full focus:outline-none is-input-start px-2 w-[300px] py-1 bg-gray-100"  placeholder="Enter name"/>
-                    <button type="submit" @click="createCategory" class="text-white bg-green-500 hover:bg-green-300 focus:outline-none font-medium text-sm rounded-lg px-5 py-2 text-center ml-5">Thêm</button>
+                    <button type="submit" @click="createLaptop" class="text-white bg-green-500 hover:bg-green-300 focus:outline-none font-medium text-sm rounded-lg px-5 py-2 text-center ml-5">Thêm</button>
                 </div>
                 <span class="px-10 pt-2 text-red-400" v-html="errorName"></span>
             </div>
@@ -126,7 +128,7 @@
         <div class="flex w-3/5 flex-col gap-y-8">
           <div class="flex flex-col justify-between rounded-10 bg-white p-7">
             <div class="flex items-center justify-between">
-              <h2 class="text-[20px] font-medium bg-white">All category</h2>
+              <h2 class="text-[20px] font-medium bg-white">All laptop</h2>
             </div>
             <table class="mt-4">
               <thead>
@@ -139,21 +141,21 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="category in categories.data" :key="category.id" class="border-b bg-white last:border-none" >
+                <tr v-for="laptop in lapTops.data" :key="laptop.id" class="border-b bg-white last:border-none" >
                   <td class="py-4">
                     <span class="text-sm font-medium bg-white ">
-                      {{ category.id }}
+                      {{ laptop.id }}
                     </span>
                   </td>
                   <td class="py-4">
                     <span class="text-sm text-gray-400">
-                      {{ moment(category.created_at).format("YYYY-MM-DD") }}
+                      {{ moment(laptop.created_at).format("YYYY-MM-DD") }}
                     </span>
                   </td>
                   <td class="py-4">
                     <div class="flex items-center gap-x-2">
                       <span class="text-sm bg-white">
-                        {{ category.name }}
+                        {{ laptop.name }}
                       </span>
                     </div>
                   </td>
@@ -161,10 +163,10 @@
                   </td>
                   <td class="py-4">
                     <div class="flex items-center gap-x-2">
-                      <div @click.prevent="editCategory (category)" class="flex items-center justify-center rounded-full bg-white p-2 hover:text-green-400 focus:text-green-400" >
+                      <div @click.prevent="editLaptop (laptop)" class="flex items-center justify-center rounded-full bg-white p-2 hover:text-green-400 focus:text-green-400" >
                           <EditIcon lass="h-6 w-6 stroke-current text-gray-400 cursor-pointer"/>
                       </div>
-                      <div @click.prevent="deleteCategory (category)" class="flex items-center justify-center rounded-full bg-white p-2 hover:text-red-400 focus:text-red-400" >
+                      <div @click.prevent="deleteLaptop (laptop)" class="flex items-center justify-center rounded-full bg-white p-2 hover:text-red-400 focus:text-red-400" >
                           <DeleteIcon lass="h-6 w-6 stroke-current text-gray-400 "/>
                       </div>
                     </div>
@@ -173,22 +175,21 @@
               </tbody>
             </table>
             <div class="flex items-center justify-center mt-10">
-              <pagination class="" :data="categories" v-bind:showDisabled="true" icon="chevron" v-on:change-page="getResults"></pagination>
+              <pagination class="" :data="lapTops" v-bind:showDisabled="true" icon="chevron" v-on:change-page="getResults"></pagination>
             </div>
           </div>
         </div>
       </div>
     </main>
-    <div v-show="showUpdate"  class="fixed inset-0 bg-black bg-opacity-25 backdrop-blue-sm flex justify-center items-center">
+    <div v-show="showUpdate" class="fixed inset-0 bg-black bg-opacity-25 backdrop-blue-sm flex justify-center items-center">
         <div class="w-[500px]"> 
-            <div class="bg-white m-5 px-5 py-5">
-                <span class=" text-[16px] px-5">Tên phụ kiên</span>
-                <Form @submit="updateCategory " :validation-schema="schema" v-slot="{errors}" class="flex flex-col space-y-2 " >
-                    <Field type="text" name="name" v-model="form.name"  :class="{'is-invalid': errors.name}" class="outline-0 px-5 py-1 bg-gray-100 is-input-start mx-5 mt-2"  placeholder="Enter name"/>
+            <div class="bg-white">
+                <Form @submit="updateLaptop " :validation-schema="schema" v-slot="{errors}" class="flex flex-col space-y-5 " >
+                    <Field type="text" name="name" v-model="form.name"  :class="{'is-invalid': errors.name}" class="outline-0 px-5 py-1 bg-gray-100 is-input-start mx-5 mt-10"  placeholder="Enter name"/>
                     <span class="text-red-500 text-[14px] invalid-feedback px-5">{{ errors.name }}</span>
                     <div class="flex justify-center items-center">
-                        <button type="submit" class="text-white bg-green-500 hover:bg-green-300 focus:outline-none font-medium text-sm rounded-lg px-5 py-1.5 text-center  mb-5 mr-5">Update</button>
-                        <button @click="closeCategory " class="text-white bg-green-500 hover:bg-green-300 focus:outline-none font-medium text-sm rounded-lg px-5 py-1.5 mb-5 text-center mr-5">Cancel</button>
+                        <button type="submit" class="text-white my-5 bg-green-500 hover:bg-green-300 focus:outline-none font-medium text-sm rounded-lg px-5 py-2.5 text-center mr-5">Update</button>
+                        <button @click="closeLaptop " class="text-white my-5 bg-green-500 hover:bg-green-300 focus:outline-none font-medium text-sm rounded-lg px-5 py-2.5 text-center mr-5">Cancel</button>
                     </div>
               </Form>
             </div>

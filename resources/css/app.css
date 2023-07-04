@@ -16,6 +16,46 @@
     color: aqua;
     cursor: pointer;
 }
+.input-bg-gray-500{
+    border: 1px solid #21b9f6;
+}
+.input-bg-gray-500:focus{
+    border: 1px solid #21b9f6;
+}
+
+
+.is-bg-green-500{
+    border: 1px solid #606160;
+    cursor: pointer;
+}
+.is-bg-green-500:focus{
+    border: 1px solid #21f681;
+    color: rgb(0, 255, 76);
+    cursor: pointer;
+}
+
+.is-bg-green-page-500{
+    cursor: pointer;
+}
+.is-bg-green-page-500:hover{
+    color: rgb(0, 255, 76);
+    cursor: pointer;
+}
+.is-bg-green-page-500:focus{
+    color: rgb(0, 255, 76);
+    cursor: pointer;
+}
+
+.shadow-product-is{
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+}
+
+.shadow-x-full{
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+.overflow{
+    overflow: auto;
+}
 /* Not found*/
 #error-page{
     display: flex;
@@ -109,7 +149,7 @@
 
 .ck-editor__editable{
     height: 300px;
-    width: 760px;
+    width: 630px;
 }
 .is-curser{
     cursor: pointer;
