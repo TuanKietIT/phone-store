@@ -10,186 +10,214 @@
   import { reactive,ref, onMounted } from 'vue'
   import * as yup from 'yup';
   import moment from "moment";
+  import pagination from 'laravel-vue-semantic-ui-pagination';
 
+  const token = localStorage.getItem('token');
   const reader = new FileReader();
 
   const editor = ref(ClassicEditor);
   const editorData = ref('<p>Content of the editor.</p>');
-  const editorConfig = ref('<p>Content of the editor.</p>');
 
-    const editorOption = {
-        placeholder: 'core',
-        modules: {
-            toolbar: [
-                ['bold', 'italic', 'underline', 'strike'],
-                ['blockquote', 'code-block'],
-                [{ header: 1 }, { header: 2 }],
-                [{ list: 'ordered' }, { list: 'bullet' }],
-                [{ script: 'sub' }, { script: 'super' }],
-                [{ indent: '-1' }, { indent: '+1' }],
-                [{ direction: 'rtl' }],
-                [{ size: ['small', false, 'large', 'huge'] }],
-                [{ header: [1, 2, 3, 4, 5, 6, false] }],
-                [{ color: [] }, { background: [] }],
-                [{ font: [] }],
-                [{ align: [] }],
-                ['clean'],
-                ['link', 'image', 'video']
-            ]
-        }
+  const editorOption = {
+      placeholder: 'core',
+      modules: {
+          toolbar: [
+              ['bold', 'italic', 'underline', 'strike'],
+              ['blockquote', 'code-block'],
+              [{ header: 1 }, { header: 2 }],
+              [{ list: 'ordered' }, { list: 'bullet' }],
+              [{ script: 'sub' }, { script: 'super' }],
+              [{ indent: '-1' }, { indent: '+1' }],
+              [{ direction: 'rtl' }],
+              [{ size: ['small', false, 'large', 'huge'] }],
+              [{ header: [1, 2, 3, 4, 5, 6, false] }],
+              [{ color: [] }, { background: [] }],
+              [{ font: [] }],
+              [{ align: [] }],
+              ['clean'],
+              ['link', 'image', 'video']
+          ]
+      }
+  }
+
+  const news = ref([]);
+  const currentPage = ref(1);
+  const errorDescription = ref('');
+  const errorTitle = ref('');
+  const errorFile = ref('');
+  
+  const form = reactive({
+      id: '',
+      title: '',
+      description: '',
+      image: '',
+      status: 0,
+  });
+  const imgPreview = ref(null);
+
+  const onChangeImage = (e) => {
+      form.image = e.target.files[0];
+      reader.addEventListener("load", function () {
+          imgPreview = reader.result;
+      }.bind(), false);
+      if (form.image) {
+          if ( /\.(jpe?g|png|gif)$/i.test( form.image.name ) ) {
+              reader.readAsDataURL( form.image );
+          }
+      }
+  }
+
+
+  const createNews = () => {
+      const formData = new FormData();
+      formData.append('title', form.title);
+      formData.append('description', form.description);
+      formData.append('status', form.status);
+      formData.append('file', form.image);
+      axios.post('/api/news/create', formData,{
+          headers: {
+              'content-type': 'multipart/form-data',
+                Authorization: ' Bearer ' + token
+          }
+      })
+      .then(response =>{
+          getResults();
+          form.id = '';
+          form.description = '';
+          form.image = '';
+          form.status = 0;
+          form.title = '';
+          closeNews();
+      })
+      .catch(function (error){
+          if(error.response){
+              if (error.response.status === 422) {
+                  errorTitle.value = error.response.data.errors.title;
+                  errorDescription.value = error.response.data.errors.description;
+                  errorFile.value = error.response.data.errors.file;
+
+              }
+              else if (error.request) {
+                  console.log(error.request);
+              } else {
+                  console.log('Error', error.message);
+              }
+          }
+      })
+  };
+  
+
+  const status = (item) => {
+      if(item.status > 0){
+          return true;
+      }
+      else {
+          return false;
+      }
+  }
+
+  const statusTrue = reactive({
+      status: 1,
+  });
+  const statusFalse = reactive({
+      status: 0,
+  });
+
+  const updateStatus = (item) => {
+      form.id = item.id;
+      if (item.status == 0) {
+          return axios.post(`/api/news/updated/${form.id}`, statusTrue,{
+              headers: {
+                  'content-type': 'multipart/form-data',
+                  Authorization: ' Bearer ' + token
+              }
+          })
+          .then(response =>{
+              getResults();
+              closeNews();
+          })
+      }
+      else {
+          return axios.post(`/api/news/updated/${form.id}`, statusFalse,{
+              headers: {
+                  'content-type': 'multipart/form-data',
+                  Authorization: ' Bearer ' + token
+              }
+          })
+          .then(response =>{
+              getResults();
+              closeNews();
+          })
+      }
+      
+  }
+  const editNews = (item) => {
+    showCreate.value = true;
+    save.value = false;
+    update.value = true;
+    form.id = item.id;
+    form.description = item.description;
+    form.image = item.image;
+    form.status = item.status;
+    form.title = item.title;
+  }
+
+  const updateNews = () => {
+      const formData = new FormData();
+      formData.append('description', form.description);
+      formData.append('status', form.status);
+      formData.append('title', form.title);
+      formData.append('file', form.image);
+      axios.post(`/api/news/update/${form.id}`, formData,{
+          headers: {
+              'content-type': 'multipart/form-data',
+              Authorization: ' Bearer ' + token
+              
+          }
+      })
+      .then(response =>{
+          getResults();
+          form.id = '';
+          form.description = '';
+          form.image = '';
+          form.status = 0;
+          form.title = '';
+          closeNews();
+      })
+  };
+
+  const deleteNews  = (item) => {
+      const remove = '/api/news/delete/' + item.id;
+      if(confirm('Are you sure, you want to delete this data?')) {
+          axios.delete(remove,{
+              headers:{
+                  Authorization: ' Bearer ' + token
+              }
+          })
+          .then(response =>{
+            getResults(); 
+          })
+      }
+  };
+
+  const getResults = (page) => {
+    if (page === 'undefined') { 
+        page = 1;
     }
 
-    const news = ref([]);
-    
-    const errorDescription = ref('');
-    const errorTitle = ref('');
-    const errorFile = ref('');
-    
-    const form = reactive({
-        id: '',
-        title: '',
-        description: '',
-        image: '',
-        status: 0,
-    });
-    const imgPreview = ref(null);
-
-    const onChangeImage = (e) => {
-        form.image = e.target.files[0];
-        reader.addEventListener("load", function () {
-            imgPreview = reader.result;
-        }.bind(), false);
-        if (form.image) {
-            if ( /\.(jpe?g|png|gif)$/i.test( form.image.name ) ) {
-                reader.readAsDataURL( form.image );
-            }
+    axios.get('/api/admin/news?page=' + page,{
+        headers:{
+            Authorization: ' Bearer ' + token
         }
-    }
-
-
-    const createNews = () => {
-        const formData = new FormData();
-        formData.append('title', form.title);
-        formData.append('description', form.description);
-        formData.append('status', form.status);
-        formData.append('file', form.image);
-        axios.post('/api/news/create', formData,{
-            headers: {
-                'content-type': 'multipart/form-data'
-            }
-        })
-        .then(response =>{
-            getNews();
-            form.id = '';
-            form.description = '';
-            form.image = '';
-            form.status = 0;
-            form.title = '';
-            closeNews();
-        })
-        .catch(function (error){
-            if(error.response){
-                if (error.response.status === 422) {
-                    errorTitle.value = error.response.data.errors.title;
-                    errorDescription.value = error.response.data.errors.description;
-                    errorFile.value = error.response.data.errors.file;
-
-                }
-                else if (error.request) {
-                    console.log(error.request);
-                } else {
-                    console.log('Error', error.message);
-                }
-            }
-        })
-    };
-    
-
-    const status = (news) => {
-        if(news.status > 0){
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    const statusTrue = reactive({
-        status: 1,
-    });
-    const statusFalse = reactive({
-        status: 0,
-    });
-
-    const updateStatus = (news) => {
-        form.id = news.id;
-        if (news.status == 0) {
-           return axios.post(`/api/news/updated/${form.id}`, statusTrue)
-            .then(response =>{
-                getNews();
-                closeNews();
-            })
-        }
-        else {
-            return axios.post(`/api/news/updated/${form.id}`, statusFalse)
-            .then(response =>{
-                getNews();
-                closeNews();
-            })
-        }
-        
-    }
-    const editNews = (news) => {
-      showCreate.value = true;
-      save.value = false;
-      update.value = true;
-      form.id = news.id;
-      form.description = news.description;
-      form.image = news.image;
-      form.status = news.status;
-      form.title = news.title;
-      console.log(form.id)
-    }
-
-    const updateNews = () => {
-        const formData = new FormData();
-        formData.append('description', form.description);
-        formData.append('status', form.status);
-        formData.append('title', form.title);
-        formData.append('file', form.image);
-        axios.post(`/api/news/update/${form.id}`, formData,{
-            headers: {
-                'content-type': 'multipart/form-data'
-            }
-        })
-        .then(response =>{
-            getNews();
-            form.id = '';
-            form.description = '';
-            form.image = '';
-            form.status = 0;
-            form.title = '';
-            closeNews();
-        })
-    };
-
-    const deleteNews  = (news) => {
-        const remove = '/api/news/delete/' + news.id;
-        axios.delete(remove)
-        .then(response =>{
-            getJobnews();
-        })
-    };
-
-    const getNews = () => {
-        axios.get('/api/news')
-        .then( response => {
-            news.value = response.data;
-        })
-    };
+    })
+      .then(response => { 
+        news.value = response.data;
+        closeNews();
+      })
+  };
 
   onMounted(() => {
-     getNews();
+    getResults();
   })
 
   const save = ref(false);
@@ -208,7 +236,6 @@
     form.image = '';
     form.status = 0;
     form.title = '';
-
   };
  
 </script>
@@ -240,34 +267,34 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="news in news" class="border-b bg-white last:border-none">
+                <tr v-for="item in news.data" :key="item.id" class="border-b bg-white last:border-none">
                   <td class="py-4">
                     <span class="text-sm font-medium bg-white ">
-                      {{ news.id }}
+                      {{ item.id }}
                     </span>
                   </td>
                   <td class="py-4">
                     <span class="text-sm text-gray-400">
-                        {{ moment(news.created_at).format("YYYY-MM-DD") }}
+                        {{ moment(item.created_at).format("YYYY-MM-DD") }}
                     </span>
                   </td>
                   <td class="py-4">
-                    <div v-if="news.image" >
-                      <img v-bind:src="'/img/' +news.image" alt="" class="h-10 w-10 rounded-full object-cover"/>
+                    <div v-if="item.image" >
+                      <img v-bind:src="'/img/' +item.image" alt="" class="h-10 w-10 rounded-full object-cover"/>
                     </div>
                   </td>
                   <td class="py-4 flex items-center gap-x-2">
-                    <span  v-html="news.description" class="text-sm mr-10 bg-white description-page"></span>
+                    <span  v-html="item.description" class="text-sm mr-10 bg-white description-page"></span>
                   </td>
-                  <td class="py-4 text-center" @click="updateStatus(news)">
-                      <span class="text-[14px] text-white bg-sky-300 px-10 py-1.5 is-curser">{{ status(news) }}</span>
+                  <td class="py-4 text-center" @click="updateStatus(item)">
+                      <span class="text-[14px] text-white bg-sky-300 px-10 py-1.5 is-curser">{{ status(item) }}</span>
                   </td>
                   <td class="py-4 flex items-center justify-center">
                     <div class="flex items-center text-center gap-x-2">
-                      <div @click.prevent="editNews(news)" class="flex items-center justify-center rounded-full bg-white p-2 hover:text-green-400 focus:text-green-400" >
+                      <div @click.prevent="editNews(item)" class="flex items-center justify-center rounded-full bg-white p-2 hover:text-green-400 focus:text-green-400" >
                           <EditIcon lass="h-6 w-6 stroke-current text-gray-400 cursor-pointer"/>
                       </div>
-                      <div @click.prevent="deleteNews(news)" class="flex items-center justify-center rounded-full bg-white p-2 hover:text-red-400 focus:text-red-400" >
+                      <div @click.prevent="deleteNews(item)" class="flex items-center justify-center rounded-full bg-white p-2 hover:text-red-400 focus:text-red-400" >
                           <DeleteIcon lass="h-6 w-6 stroke-current text-gray-400 "/>
                       </div>
                     </div>
@@ -275,6 +302,9 @@
                 </tr>
               </tbody>
             </table>
+            <div class="flex items-center justify-center mt-10">
+              <pagination class="" :data="news" v-bind:showDisabled="true" icon="chevron" v-on:change-page="getResults"></pagination>
+            </div>
           </div>
         </div>
       </div>
@@ -288,7 +318,7 @@
                     <input type="text" v-model="form.title" :class="{'is-invalid': errorTitle}" class="outline-0 px-5 py-1 bg-gray-100 is-input-start mx-5"  placeholder="Enter title"/>
                     <span class=" text-red-500 text-[14px] invalid-feedback px-5" v-html="errorTitle"></span>
                     <div class=" is-input-start mx-4 flex justify-center items-center bg-gray-100 " :class="{'is-invalid': errorDescription}">
-                        <ckeditor :editor="editor" v-model="form.description" :config="editorConfig"></ckeditor>
+                        <ckeditor :editor="editor" v-model="form.description" :config="editorOption"></ckeditor>
                     </div>
                     <span class="text-red-500 text-[14px] invalid-feedback  px-5" v-html="errorDescription" ></span>
                     <input type="file" v-on:change="onChangeImage" :class="{'is-invalid': errorFile}" class="outline-0 px-5 py-1 bg-gray-100 is-input-start mx-5"  placeholder="Enter url"/>

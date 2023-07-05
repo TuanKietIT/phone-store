@@ -12,6 +12,10 @@ class WikiController extends Controller
         $wiki = Wiki::with('jobWiki')->orderBy('id','asc')->get();
         return response()->json($wiki,200);
     }
+    public function home(){
+        $wiki = Wiki::orderBy('id','asc')->paginate(5);
+        return response()->json($wiki,200);
+    }
     public function showId($id){
         $wiki = Wiki::find($id);
         return response()->json( $wiki);

@@ -12,6 +12,10 @@ class NewsController extends Controller
         $news = News::orderBy('id','asc')->get();
         return response()->json($news,200);
     }
+    public function home(){
+        $news = News::orderBy('id','asc')->paginate(5);
+        return response()->json($news,200);
+    }
     public function showId($id){
         $news = News::find($id);
         return response()->json( $news);

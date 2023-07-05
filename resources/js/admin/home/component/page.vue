@@ -5,6 +5,8 @@
   import DeleteIcon from "../icons/delete.svg";
   import sidebar from "../layout/sidebar.vue";
   import navbar from "../layout/navbar.vue";
+  import pagination from 'laravel-vue-semantic-ui-pagination';
+
   import axios from 'axios';
   import { reactive,ref, onMounted } from 'vue'
   import { Form, Field } from 'vee-validate';
@@ -13,11 +15,29 @@
 
 
   const pages = ref([]);
+
+  const currentPage = ref(1);
   const form = reactive({
        id: '',
        name: '',
        url: '',
   });
+  
+  const getResults = (page) => {
+    if (page === 'undefined') {
+      page = 1;
+    }
+
+    const token = localStorage.getItem('token');
+    axios.get('/api/admin/page?page=' + page,{
+        headers:{
+            Authorization: ' Bearer ' + token
+        }
+    })
+    .then(response => {
+        pages.value = response.data;
+    })
+  };
 
   const showUpdate = ref(false);
 
@@ -26,18 +46,10 @@
      url: yup.string().required(),
   });
 
-  const getPage = () => {
-    axios.get('/api/page')
-    .then( response => {
-       pages.value = response.data;
-    })
-  };
-
-
   const createPage = (values, {resetForm}) => {
     axios.post('/api/page/create', values)
     .then(response =>{
-        getPage();
+      getResults();
         resetForm();
     })
   };
@@ -45,32 +57,34 @@
   const updatePage  = (values, {resetForm}) => {
     axios.post(`/api/page/update/${form.id}`, values)
     .then(response =>{
-        getPage();
+      getResults();
         resetForm();
         closePage();
     })
   };
   
-  const editPage = (page) => {
+  const editPage = (item) => {
       showUpdate.value = true;
-      form.id = page.id;
-      form.name = page.name;
-      form.url = page.url;
+      form.id = item.id;
+      form.name = item.name;
+      form.url = item.url;
   }
  
   const closePage = () => {
       showUpdate.value = false
   }
-  const deletePage  = (page) => {
-    const remove = '/api/page/delete/' + page.id;
-    axios.delete(remove)
-    .then(response =>{
-        getPage();
-    })
+  const deletePage  = (item) => {
+    const remove = '/api/page/delete/' + item.id;
+    if(confirm('Are you sure, you want to delete this data?')) {
+        axios.delete(remove)
+        .then(response =>{
+           getResults(); 
+        })
+    }
   };
 
   onMounted(() => {
-     getPage();
+    getResults();
   })
 
  
@@ -88,7 +102,7 @@
                 <Form @submit="createPage" :validation-schema="schema" v-slot="{errors}" class="flex flex-col space-y-2 w-[400px]" >
                     <Field type="text" name="name" :class="{'is-invalid': errors.name}" class="round-full focus:outline-none is-input-start px-1 py-1 bg-gray-100 mt-10"  placeholder="Enter name"/>
                     <span class="text-red-500 text-[13px] invalid-feedback">{{ errors.name }}</span>
-                    <Field type="text" name="url" :class="{'is-invalid': errors.url}" class=" focus:outline-none  is-input-start px-1 py-1 bg-gray-100 mt-1"  placeholder="Enter url"/>
+                    <Field type="text" name="url" :class="{'is-invalid': errors.url}" class=" focus:outline-none is-input-start px-1 py-1 bg-gray-100 mt-1"  placeholder="Enter url"/>
                     <span class="text-red-500 text-[13px] invalid-feedback">{{ errors.url }}</span>
                     <div class="flex justify-center items-center">
                         <button type="submit" class="text-white my-2 bg-green-500 hover:bg-green-300 focus:outline-none font-medium text-sm rounded-lg px-5 py-2 text-center mr-5">create</button>
@@ -100,7 +114,7 @@
         <div class="flex w-3/5 flex-col gap-y-8">
           <div class="flex flex-col justify-between rounded-10 bg-white p-7">
             <div class="flex items-center justify-between">
-              <h2 class="text-[20px] font-medium bg-white">All page</h2>
+              <h2 class="text-[20px] font-medium bg-white">All item</h2>
             </div>
             <table class="mt-4">
               <thead>
@@ -113,35 +127,35 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="page in pages" :key="page.id" class="border-b bg-white last:border-none" >
+                <tr v-for="item in pages.data" :key="item.id" class="border-b bg-white last:border-none" >
                   <td class="py-4">
                     <span class="text-sm font-medium bg-white ">
-                      {{ page.id }}
+                      {{ item.id }}
                     </span>
                   </td>
                   <td class="py-4">
                     <span class="text-sm text-gray-400">
-                      {{ moment(page.created_at).format("YYYY-MM-DD") }}
+                      {{ moment(item.created_at).format("YYYY-MM-DD") }}
                     </span>
                   </td>
                   <td class="py-4">
                     <div class="flex items-center gap-x-2">
                       <span class="text-sm bg-white">
-                        {{ page.name }}
+                        {{ item.name }}
                       </span>
                     </div>
                   </td>
                   <td class="py-4">
                     <span class="text-sm bg-white">
-                        {{ page.url }}
+                        {{ item.url }}
                     </span>
                   </td>
                   <td class="py-4">
                     <div class="flex items-center gap-x-2">
-                      <div @click.prevent="editPage (page)" class="flex items-center justify-center rounded-full bg-white p-2 hover:text-green-400 focus:text-green-400" >
+                      <div @click.prevent="editPage (item)" class="flex items-center justify-center rounded-full bg-white p-2 hover:text-green-400 focus:text-green-400" >
                           <EditIcon lass="h-6 w-6 stroke-current text-gray-400 cursor-pointer"/>
                       </div>
-                      <div @click.prevent="deletePage (page)" class="flex items-center justify-center rounded-full bg-white p-2 hover:text-red-400 focus:text-red-400" >
+                      <div @click.prevent="deletePage (item)" class="flex items-center justify-center rounded-full bg-white p-2 hover:text-red-400 focus:text-red-400" >
                           <DeleteIcon lass="h-6 w-6 stroke-current text-gray-400 "/>
                       </div>
                     </div>
@@ -149,6 +163,9 @@
                 </tr>
               </tbody>
             </table>
+            <div class="flex items-center justify-center mt-10">
+              <pagination class="" :data="pages" v-bind:showDisabled="true" icon="chevron" v-on:change-page="getResults"></pagination>
+            </div>
           </div>
         </div>
       </div>

@@ -23,7 +23,21 @@ class Product extends Model
         'user_id',
         'category_id',
         'location_id',
+        'color',
+        'capacity',
+        'accessory_id',
+        'phone_id',
+        'laptop_id'
     ];
+    public function accessory(){
+        return $this->belongsTo(Accessory::class,'accessory_id');
+    }
+    public function phone(){
+        return $this->belongsTo(Phone::class,'phone_id');
+    }
+    public function laptop(){
+        return $this->belongsTo(Laptop::class,'laptop_id');
+    }
     public function category(){
         return $this->belongsTo(Category::class,'category_id');
     }

@@ -6,6 +6,9 @@
   import sidebar from "../layout/sidebar.vue";
   import navbar from "../layout/navbar.vue";
   import axios from 'axios';
+  import pagination from 'laravel-vue-semantic-ui-pagination';
+
+  const token = localStorage.getItem('token');
   import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
   import { reactive,ref, onMounted } from 'vue'
   import * as yup from 'yup';
@@ -41,7 +44,8 @@
     const jobWikis = ref([]);
 
     const wikis = ref([]);
-    
+    const currentPage = ref(1);
+
     const errorList = reactive({
         description: '',
         file: '',
@@ -77,11 +81,12 @@
         formData.append('file', form.image);
         axios.post('/api/wiki/create', formData,{
             headers: {
-                'content-type': 'multipart/form-data'
+                'content-type': 'multipart/form-data',
+                Authorization: ' Bearer ' + token
             }
         })
         .then(response =>{
-            getWiki();
+            getResults();
             form.id = '';
             form.description = '';
             form.image = '';
@@ -125,16 +130,26 @@
     const updateStatus = (wiki) => {
         form.id = wiki.id;
         if (wiki.status == 0) {
-           return axios.post(`/api/wiki/updated/${form.id}`, statusTrue)
+           return axios.post(`/api/wiki/updated/${form.id}`, statusTrue,{
+                headers: {
+                    'content-type': 'multipart/form-data',
+                    Authorization: ' Bearer ' + token
+                }
+            })
             .then(response =>{
-                getWiki();
+                getResults();
                 closeWiki();
             })
         }
         else {
-            return axios.post(`/api/wiki/updated/${form.id}`, statusFalse)
+            return axios.post(`/api/wiki/updated/${form.id}`, statusFalse,{
+                headers: {
+                    'content-type': 'multipart/form-data',
+                    Authorization: ' Bearer ' + token
+                }
+            })
             .then(response =>{
-                getWiki();
+                getResults();
                 closeWiki();
             })
         }
@@ -149,7 +164,6 @@
       form.image = wiki.image;
       form.status = wiki.status;
       form.jobwiki_id = wiki.jobwiki_id;
-      console.log(form.id)
     }
 
     const updateWiki = () => {
@@ -160,11 +174,12 @@
         formData.append('file', form.image);
         axios.post(`/api/wiki/update/${form.id}`, formData,{
             headers: {
-                'content-type': 'multipart/form-data'
+                'content-type': 'multipart/form-data',
+                Authorization: ' Bearer ' + token
             }
         })
         .then(response =>{
-            getWiki();
+            getResults();
             form.id = '';
             form.description = '';
             form.image = '';
@@ -173,19 +188,32 @@
             closeWiki();
         })
     };
-
     const deleteWiki  = (wiki) => {
         const remove = '/api/wiki/delete/' + wiki.id;
-        axios.delete(remove)
-        .then(response =>{
-            getJobWiki();
-        })
+        if(confirm('Are you sure, you want to delete this data?')) {
+            axios.delete(remove,{
+                headers:{
+                    Authorization: ' Bearer ' + token
+                }
+            })
+            .then(response =>{
+              getResults(); 
+            })
+        }
     };
+    const getResults = (page) => {
+      if (page === 'undefined') { 
+         page = 1;
+      }
 
-    const getWiki = () => {
-        axios.get('/api/wiki')
-        .then( response => {
-            wikis.value = response.data;
+      axios.get('/api/admin/wiki?page=' + page,{
+          headers:{
+              Authorization: ' Bearer ' + token
+          }
+      })
+        .then(response => { 
+          wikis.value = response.data;
+          closeWiki();
         })
     };
 
@@ -197,8 +225,8 @@
     };
 
   onMounted(() => {
+    getResults();
     getJobWiki();
-    getWiki();
   })
 
   const save = ref(false);
@@ -240,16 +268,16 @@
             <table class="mt-4">
               <thead>
                 <tr>
-                  <td class="py-1 w-[50px] text-sm text-gray-400">No</td>
-                  <td class="py-1 w-[150px] text-sm text-gray-400">Date</td>
-                  <td class="py-1 w-[100px] text-sm text-gray-400">Image</td>
-                  <td class="py-1 w-[600px] text-sm text-gray-400">Client</td>
+                  <td class="py-1 w-[50px] text-sm text-gray-400">ID</td>
+                  <td class="py-1 w-[150px] text-sm text-gray-400">Ngày</td>
+                  <td class="py-1 w-[100px] text-sm text-gray-400">Hình ảnh</td>
+                  <td class="py-1 w-[600px] text-sm text-gray-400">Mô tả</td>
                   <td class="py-1 w-[100px] text-center text-sm text-gray-400">Status</td>
                   <td class="py-1 text-sm text-center text-gray-400">Status</td>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="wiki in wikis" class="border-b bg-white last:border-none">
+                <tr v-for="wiki in wikis.data" :key="wiki.id" class="border-b bg-white last:border-none">
                   <td class="py-4">
                     <span class="text-sm font-medium bg-white ">
                       {{ wiki.id }}
@@ -262,7 +290,7 @@
                   </td>
                   <td class="py-4">
                     <div v-if="wiki.image" >
-                      <img v-bind:src="'/img/' +wiki.image" alt="" class="h-10 w-10 rounded-full object-cover"/>
+                      <img v-bind:src="'/img/' + wiki.image" alt="" class="h-10 w-10 rounded-full object-cover"/>
                     </div>
                   </td>
                   <td class="py-4 flex items-center gap-x-2">
@@ -284,6 +312,9 @@
                 </tr>
               </tbody>
             </table>
+            <div class="flex items-center justify-center mt-10">
+              <pagination class="" :data="wikis" v-bind:showDisabled="true" icon="chevron" v-on:change-page="getResults"></pagination>
+            </div>
           </div>
         </div>
       </div>
@@ -295,7 +326,7 @@
                 <hr class="py-2"/>
                 <form  class="flex flex-col space-y-2 " >
                     <div class="flex justify-center items-center bg-gray-100 " :class="{'is-invalid': errorList.description}">
-                        <ckeditor :editor="editor" v-model="form.description" :config="editorConfig"></ckeditor>
+                        <ckeditor :editor="editor" v-model="form.description" :config="editorOption"></ckeditor>
                     </div>
                     <span class="text-red-500 text-[14px] invalid-feedback px-5">{{ errorList.description }}</span>
                     <select v-model="form.jobwiki_id" :class="{'is-invalid': errorList.jobwiki_id}" class="outline-0 px-5 py-1 bg-gray-100 is-input-start mx-5">

@@ -29,11 +29,16 @@
     }
 
     // Using vue-resource as an example
-    axios.get('/api/admin/laptop?page=' + page)
-      .then(response => {
-         lapTops.value = response.data;
-         reset();
-      })
+    const token = localStorage.getItem('token');
+    axios.get('/api/admin/laptop?page=' + page,{
+        headers:{
+            Authorization: ' Bearer ' + token
+        }
+    })
+    .then(response => {
+      lapTops.value = response.data;
+      reset();
+    })
   };
 
   const showUpdate = ref(false);

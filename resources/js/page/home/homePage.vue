@@ -77,8 +77,90 @@
               <pagination class="" :data="iphone" v-bind:showDisabled="true" icon="chevron" v-on:change-page="getResults"></pagination>
             </div>
           </div>
+          <div class="mx-3">
+            <span class="text-[20px] text-sky-500 mt-10 font-medium uppercase">sam sung chính hãng</span>
+            <hr class="px-2"/>
+          </div>
+          <div class="grid grid-flow-row grid-cols-1 md:grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 xl:grid-cols-4 gap-10">
+            <div v-for="product in iphone.data" :key="product.id" class="my-5 ml-2 rounded-lg shadow-product-is">
+              <a href="#" class="flex flex-row justify-center ">
+                <img v-bind:src="'/img/' + product.image1" class="rounded-tl-lg my-2 mx-3 h-[180px] w-[200px] rounded-tr-lg" />
+              </a>
+              <div class="p-5">
+                <h3><a href="#" class=" flex flex-row justify-center text-center">{{ product.title }}</a></h3>
+                <div class="flex flex-row justify-center text-center my-1">
+                  <span>Giá: {{ formatPrice(product.price) }} VND </span>
+                </div>
+                <div class="flex flex-col justify-between items-center">
+                  <a class=" bg-gray-200 rounded-full py-2 px-8 my-1 text-sm text-gray-700 hover:bg-green-300 hover:text-white flex flex-row justify-center" href="#">
+                    <router-link  :to="{ path: '/home/product/'+ product.id}" class="btn-see" >
+                        Xem thêm
+                    </router-link>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center justify-center mt-10">
+              <pagination class="" :data="iphone" v-bind:showDisabled="true" icon="chevron" v-on:change-page="getResults"></pagination>
+            </div>
+          </div>
+          <div class="mx-3">
+            <span class="text-[20px] text-sky-500 mt-10 font-medium uppercase">ipad chính hãng</span>
+            <hr class="px-2"/>
+          </div>
+          <div class="grid grid-flow-row grid-cols-1 md:grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 xl:grid-cols-4 gap-10">
+            <div v-for="product in iphone.data" :key="product.id" class="my-5 ml-2 rounded-lg shadow-product-is">
+              <a href="#" class="flex flex-row justify-center ">
+                <img v-bind:src="'/img/' + product.image1" class="rounded-tl-lg my-2 mx-3 h-[180px] w-[200px] rounded-tr-lg" />
+              </a>
+              <div class="p-5">
+                <h3><a href="#" class=" flex flex-row justify-center text-center">{{ product.title }}</a></h3>
+                <div class="flex flex-row justify-center text-center my-1">
+                  <span>Giá: {{ formatPrice(product.price) }} VND </span>
+                </div>
+                <div class="flex flex-col justify-between items-center">
+                  <a class=" bg-gray-200 rounded-full py-2 px-8 my-1 text-sm text-gray-700 hover:bg-green-300 hover:text-white flex flex-row justify-center" href="#">
+                    <router-link  :to="{ path: '/home/product/'+ product.id}" class="btn-see" >
+                        Xem thêm
+                    </router-link>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center justify-center mt-10">
+              <pagination class="" :data="iphone" v-bind:showDisabled="true" icon="chevron" v-on:change-page="getResults"></pagination>
+            </div>
+          </div>
+          <div class="mx-3">
+            <span class="text-[20px] text-sky-500 mt-10 font-medium uppercase">Laptop chính hãng</span>
+            <hr class="px-2"/>
+          </div>
+          <div class="grid grid-flow-row grid-cols-1 md:grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 xl:grid-cols-4 gap-10">
+            <div v-for="product in iphone.data" :key="product.id" class="my-5 ml-2 rounded-lg shadow-product-is">
+              <a href="#" class="flex flex-row justify-center ">
+                <img v-bind:src="'/img/' + product.image1" class="rounded-tl-lg my-2 mx-3 h-[180px] w-[200px] rounded-tr-lg" />
+              </a>
+              <div class="p-5">
+                <h3><a href="#" class=" flex flex-row justify-center text-center">{{ product.title }}</a></h3>
+                <div class="flex flex-row justify-center text-center my-1">
+                  <span>Giá: {{ formatPrice(product.price) }} VND </span>
+                </div>
+                <div class="flex flex-col justify-between items-center">
+                  <a class=" bg-gray-200 rounded-full py-2 px-8 my-1 text-sm text-gray-700 hover:bg-green-300 hover:text-white flex flex-row justify-center" href="#">
+                    <router-link  :to="{ path: '/home/product/'+ product.id}" class="btn-see" >
+                        Xem thêm
+                    </router-link>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center justify-center mt-10">
+              <pagination class="" :data="iphone" v-bind:showDisabled="true" icon="chevron" v-on:change-page="getResults"></pagination>
+            </div>
+          </div>
         </div>
       </div>
+      
     </div>
     <footerVue />
   </div>

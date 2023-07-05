@@ -6,9 +6,13 @@
 
 
   const menus = ref([]);
-  
+  const token = localStorage.getItem('token');
   const getMenu = () => {
-    axios.get('/api/menu')
+    axios.get('/api/menu',{
+        headers:{
+            Authorization: ' Bearer ' + token
+        }
+    })
     .then( response => {
        menus.value = response.data;
     })

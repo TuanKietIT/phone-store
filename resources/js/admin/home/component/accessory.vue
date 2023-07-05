@@ -25,12 +25,16 @@
 
   
   const getResults = (page) => {
-    if (page === 'undefined') {
+    if (page === 'undefined') { 
       page = 1;
     }
 
-    // Using vue-resource as an example
-    axios.get('/api/admin/accessory?page=' + page)
+    const token = localStorage.getItem('token');
+    axios.get('/api/admin/accessory?page=' + page,{
+        headers:{
+            Authorization: ' Bearer ' + token
+        }
+    })
       .then(response => {
          accessories.value = response.data;
          reset();

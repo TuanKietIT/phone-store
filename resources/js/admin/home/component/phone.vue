@@ -27,13 +27,17 @@
     if (page === 'undefined') {
       page = 1;
     }
-
+    const token = localStorage.getItem('token');
     // Using vue-resource as an example
-    axios.get('/api/admin/phone?page=' + page)
-      .then(response => {
-         phones.value = response.data;
-         reset();
-      })
+    axios.get('/api/admin/phone?page=' + page,{
+        headers:{
+            Authorization: ' Bearer ' + token
+        }
+    })
+    .then(response => {
+      phones.value = response.data;
+      reset();
+    })
   };
 
   const showUpdate = ref(false);

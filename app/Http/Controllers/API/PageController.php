@@ -12,6 +12,10 @@ class PageController extends Controller
         $page = Page::orderBy('id','asc')->get();
         return response()->json($page,200);
     }
+    public function home(){
+        $page = Page::orderBy('id','asc')->paginate(5);
+        return response()->json($page,200);
+    }
     public function showId($id){
         $page = Page::find($id);
         return response()->json( $page);

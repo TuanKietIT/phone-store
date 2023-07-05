@@ -59,7 +59,8 @@ import axios from 'axios';
         <div class="flex w-2/5">
              <div class="flex">
                  <form  class="flex" >
-                    <input type="text" class="outline-0 px-5 py-1 bg-gray-100 input-bg-gray-500 mx-5"  placeholder="Enter title"/>
+                    <input type="text" class="outline-0 px-5  w-[350px] py-1 bg-gray-100 input-bg-gray-500 mx-5"  placeholder="Enter title"/>
+                    <button type="button" class="bg-sky-300 px-1 text-white">Tim kiếm</button>
                   </form>
              </div>
         </div>

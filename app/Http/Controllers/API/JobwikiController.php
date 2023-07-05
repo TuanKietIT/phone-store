@@ -12,6 +12,10 @@ class JobwikiController extends Controller
         $jobWiki = Jobwiki::orderBy('id','asc')->get();
         return response()->json($jobWiki,200);
     }
+    public function home(){
+        $jobWiki = Jobwiki::orderBy('id','asc')->paginate(5);
+        return response()->json($jobWiki,200);
+    }
     public function showId($id){
         $jobWiki = Jobwiki::find($id);
         return response()->json( $jobWiki);

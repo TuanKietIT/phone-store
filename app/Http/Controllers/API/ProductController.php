@@ -41,6 +41,11 @@ class ProductController extends Controller
             'file2' => 'required',
             'file3' => 'required',
             'file4' => 'required',
+            'color'=> 'required',
+            'capacity' => 'required',
+            'phone_id'  => 'required',
+            'laptop_id'  => 'required',
+            'accessory_id'  => 'required',
        ]);
         if($validator->fails()){
             return response()->json([

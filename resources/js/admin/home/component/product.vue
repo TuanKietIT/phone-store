@@ -15,7 +15,6 @@
 
   const editor = ref(ClassicEditor);
   const editorData = ref('<p>Content of the editor.</p>');
-  const editorConfig = ref('<p>Content of the editor.</p>');
 
     const editorOption = {
         placeholder: 'core',
@@ -52,7 +51,8 @@
     const errorFile2 = ref('');
     const errorFile3 = ref('');
     const errorFile4 = ref('');
-
+    const errorColor = ref('');
+    const errorCapacity = ref('');
 
 
     
@@ -70,7 +70,12 @@
         image4: 'null',
         user_id:'',
         category_id: '',
+        color: '',
+        capacity: '',
         location_id:'',
+        accessory_id:'0',
+        phone_id:'0',
+        laptop_id:'0'
     });
 
     const reset = () => {
@@ -86,7 +91,13 @@
       form.image4 = '',
       form.user_id ='',
       form.category_id = '',
-      form.location_id =''
+      form.location_id ='',
+      form.color = '',
+      form.capacity = '',
+      form.location_id ='',
+      form.accessory_id ='0',
+      form.phone_id ='0',
+      form.laptop_id ='0'
     }
 
     const getInfoAdmin = () =>{
@@ -102,11 +113,35 @@
     }
 
     const categories = ref([]);
+    const accessories = ref([]);
+    const phones = ref([]);
+    const laptops = ref([]);
 
     const getCategory = () => {
       axios.get('/api/category')
       .then( response => {
         categories.value = response.data;
+      })
+    };
+    
+    const getAccessory = () => {
+      axios.get('/api/accessory')
+      .then( response => {
+        accessories.value = response.data;
+      })
+    };
+    
+    const getPhone = () => {
+      axios.get('/api/phone')
+      .then( response => {
+        phones.value = response.data;
+      })
+    };
+    
+    const getLaptop = () => {
+      axios.get('/api/laptop')
+      .then( response => {
+        laptops.value = response.data;
       })
     };
 
@@ -134,6 +169,12 @@
         formData.append('user_id', form.user_id);
         formData.append('category_id', form.category_id);
         formData.append('location_id', form.location_id);
+        formData.append('color', form.color);
+        formData.append('capacity', form.capacity);
+        formData.append('phone_id', form.phone_id);
+        formData.append('laptop_id', form.laptop_id);
+        formData.append('accessory_id', form.accessory_id);
+        
         axios.post('/api/product/create', formData,{
             headers: {
                 'content-type': 'multipart/form-data'
@@ -142,6 +183,7 @@
         .then(response =>{
             getProduct();
             reset();
+            form.image1 = ""
             closeProduct();
             form.id = response.data;
         })
@@ -159,6 +201,8 @@
                     errorFile2.value = error.response.data.errors.file2;
                     errorFile3.value = error.response.data.errors.file3;
                     errorFile4.value = error.response.data.errors.file4;
+                    errorColor.value = error.response.data.errors.color;
+                    errorCapacity.value = error.response.data.errors.capacity;
 
                 }
                 else if (error.request) {
@@ -257,6 +301,9 @@
      getInfoAdmin();
      getCategory();
      getLocation();
+     getAccessory();
+     getPhone();
+     getLaptop();
   })
 
   const save = ref(false);
@@ -276,7 +323,6 @@
   const file2 = ref(false);
   const file3 = ref(false);
   const file4 = ref(false);
-
 
   let imageFile = ref('');
   const handleImage1 = (e) => {
@@ -408,15 +454,14 @@
                     <span class=" text-red-500 text-[14px] invalid-feedback px-5" v-html="errorNumber"></span>
                     <input type="text" v-model="form.price" :class="{'is-invalid': errorPrice}" class="outline-0 px-2 py-2 bg-gray-100 is-input-start mx-5" min="1"  placeholder="Nhập mức giá"/>
                     <span class=" text-red-500 text-[14px] invalid-feedback px-5" v-html="errorPrice"></span>
-                    <input type="text" v-model="form.status" :class="{'is-invalid': errorStatus}" class="outline-0 px-2 py-2 bg-gray-100 is-input-start mx-5" min="1"  placeholder="Nhập trạng thái"/>
-                    <span class=" text-red-500 text-[14px] invalid-feedback px-5" v-html="errorStatus"></span>
-                    <select name="" v-model="form.category_id" :class="{'is-invalid': errorCategory}" class="outline-0 px-2 py-2 bg-gray-100 is-input-start mx-5 my-5">
+                    <select name="" v-model="form.status" :class="{'is-invalid': errorStatus}" class="outline-0 px-2 py-2 bg-gray-100 is-input-start mx-5 my-5">
                        <option value="" disabled>Chọn trạng thái</option>
                        <option value="Đang cập nhật">Đang cập nhật</option>
                        <option value="Mới">Mới</option>
                        <option value="Đã qua sử dụng">Đã qua sử dụng</option>
                     </select>
-                    <select name="" v-model="form.category_id" :class="{'is-invalid': errorCategory}" class="outline-0 px-2 py-2 bg-gray-100 is-input-start mx-5 my-5">
+                    <span class=" text-red-500 text-[14px] invalid-feedback px-5" v-html="errorStatus"></span>
+                    <select name=""  v-model="form.color" :class="{'is-invalid': errorColor}" class="outline-0 px-2 py-2 bg-gray-100 is-input-start mx-5 my-5">
                        <option value="" disabled>Chọn màu sắc</option>
                        <option value="Đang cập nhật">Đang cập nhật</option>
                        <option value="màu Xanh">màu Xanh</option>
@@ -426,7 +471,8 @@
                        <option value="màu Đỏ">màu Đỏ</option>
                        <option value="màu Hồng">màu Hồng</option>
                     </select>
-                    <select name="" v-model="form.category_id" :class="{'is-invalid': errorCategory}" class="outline-0 px-2 py-2 bg-gray-100 is-input-start mx-5 my-5">
+                    <span class=" text-red-500 text-[14px] invalid-feedback px-5" v-html="errorColor"></span>
+                    <select name="" v-model="form.capacity" :class="{'is-invalid': errorCapacity}" class="outline-0 px-2 py-2 bg-gray-100 is-input-start mx-5 my-5">
                        <option value="" disabled>Chọn dung lượng</option>
                        <option value="Đang cập nhật">Đang cập nhật</option>
                        <option value="16GB">16GB</option>
@@ -436,19 +482,31 @@
                        <option value="256GB">256GB</option>
                        <option value="512GB">512GB</option>
                     </select>
-                    <span class=" text-red-500 text-[14px] invalid-feedback px-5" v-html="errorCategory"></span>
+                    <span class=" text-red-500 text-[14px] invalid-feedback px-5" v-html="errorCapacity"></span>
                     <select name="" v-model="form.category_id" :class="{'is-invalid': errorCategory}" class="outline-0 px-2 py-2 bg-gray-100 is-input-start mx-5 my-5">
                        <option value="" disabled>Chọn danh mục</option>
-                       <option :value="category.id" v-for="category in categories" :key="category.id">{{category.title}}</option>
+                       <option :value="category.id" v-for="category in categories" :key="category.id">{{category.name}}</option>
                     </select>
                     <span class=" text-red-500 text-[14px] invalid-feedback px-5" v-html="errorCategory"></span>
-                    <select name="" v-model="form.location_id" :class="{'is-invalid': errorLocation}" class="outline-0 px-2 py-2 bg-gray-100 is-input-start mx-5">
-                       <option value="" disabled>Chọn danh mục</option>
+                    <select  v-model="form.location_id" :class="{'is-invalid': errorLocation}" class="outline-0 px-2 py-2 bg-gray-100 is-input-start mx-5">
+                       <option value="" disabled>Chọn khu vực</option>
                        <option :value="location.id" v-for="location in locations" :key="location.id">{{location.name}}</option>
                     </select>
                     <span class=" text-red-500 text-[14px] invalid-feedback px-5" v-html="errorLocation"></span>
+                    <select v-if="form.category_id == 1"  v-model="form.phone_id"  class="outline-0 px-2 py-2 bg-gray-100 is-input-start mx-5 my-5">
+                       <option value="" disabled>Chon điện thoại</option>
+                       <option :value="phone.id" v-for="phone in phones" :key="phone.id">{{phone.name}}</option>
+                    </select>
+                    <select v-else-if="form.category_id == 2" name="" v-model="form.laptop_id" :class="{'is-invalid': errorCategory}" class="outline-0 px-2 py-2 bg-gray-100 is-input-start mx-5 my-5">
+                       <option value="" disabled>Chon laptop</option>
+                       <option :value="laptop.id" v-for="laptop in laptops" :key="laptop.id">{{laptop.name}}</option>
+                    </select>
+                    <select  v-else="form.category_id == 4" relative v-model="form.accessory_id" :class="{'is-invalid': errorCategory}" class="outline-0 px-2 py-2 bg-gray-100 is-input-start mx-5 my-5">
+                       <option value="Chọn phụ kiện" disabled>Chọn phụ kiện</option>
+                       <option :value="accessory.id" v-for="accessory in accessories" :key="accessory.id">{{accessory.name}}</option>
+                    </select>
                     <div class=" is-input-start mx-4 flex justify-center items-center bg-gray-100 " :class="{'is-invalid': errorDescription}">
-                        <ckeditor :editor="editor" v-model="form.description" :config="editorConfig"></ckeditor>
+                        <ckeditor :editor="editor" v-model="form.description" :config="editorOption"></ckeditor>
                     </div>
                     <span class="text-red-500 text-[14px] invalid-feedback  px-5" v-html="errorDescription" ></span>
                     <div class=" is-input-start mx-4 flex bg-gray-100">
