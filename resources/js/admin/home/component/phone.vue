@@ -79,7 +79,11 @@
 
 
   const updatePhone  = (values, {resetForm}) => {
-    axios.post(`/api/phone/update/${form.id}`, values)
+    axios.post(`/api/phone/update/${form.id}`, values,{
+          headers:{
+              Authorization: ' Bearer ' + token
+          }
+      })
     .then(response =>{
       getResults();
         resetForm();
@@ -99,7 +103,11 @@
   const deletePhone  = (phone) => {
     const remove = '/api/phone/delete/' + phone.id;
     if(confirm('Are you sure, you want to delete this data?')) {
-        axios.delete(remove)
+        axios.delete(remove,{
+          headers:{
+              Authorization: ' Bearer ' + token
+          }
+      })
         .then(response =>{
            getResults(); 
         })

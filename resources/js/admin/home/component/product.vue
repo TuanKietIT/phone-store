@@ -5,311 +5,384 @@
   import PlusIcon from "../icons/plus.svg";
   import sidebar from "../layout/sidebar.vue";
   import navbar from "../layout/navbar.vue";
+  import loadingCreateButton from "./loadingCreateButton.vue";
+
+  import pagination from 'laravel-vue-semantic-ui-pagination';
   import axios from 'axios';
   import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
   import { reactive,ref, onMounted } from 'vue'
   import * as yup from 'yup';
   import moment from "moment";
+  import {useRoute,useRouter} from 'vue-router'
+ 
+  const route = useRoute();
+  const router = useRouter();
 
   let reader = new FileReader();
-
+  const token = localStorage.getItem('token');
   const editor = ref(ClassicEditor);
   const editorData = ref('<p>Content of the editor.</p>');
 
-    const editorOption = {
-        placeholder: 'core',
-        modules: {
-            toolbar: [
-                ['bold', 'italic', 'underline', 'strike'],
-                ['blockquote', 'code-block'],
-                [{ header: 1 }, { header: 2 }],
-                [{ list: 'ordered' }, { list: 'bullet' }],
-                [{ script: 'sub' }, { script: 'super' }],
-                [{ indent: '-1' }, { indent: '+1' }],
-                [{ direction: 'rtl' }],
-                [{ size: ['small', false, 'large', 'huge'] }],
-                [{ header: [1, 2, 3, 4, 5, 6, false] }],
-                [{ color: [] }, { background: [] }],
-                [{ font: [] }],
-                [{ align: [] }],
-                ['clean'],
-                ['link', 'image', 'video']
-            ]
+  const editorOption = {
+      placeholder: 'core',
+      modules: {
+          toolbar: [
+              ['bold', 'italic', 'underline', 'strike'],
+              ['blockquote', 'code-block'],
+              [{ header: 1 }, { header: 2 }],
+              [{ list: 'ordered' }, { list: 'bullet' }],
+              [{ script: 'sub' }, { script: 'super' }],
+              [{ indent: '-1' }, { indent: '+1' }],
+              [{ direction: 'rtl' }],
+              [{ size: ['small', false, 'large', 'huge'] }],
+              [{ header: [1, 2, 3, 4, 5, 6, false] }],
+              [{ color: [] }, { background: [] }],
+              [{ font: [] }],
+              [{ align: [] }],
+              ['clean'],
+              ['link', 'image', 'video']
+          ]
+      }
+  }
+
+  const products = ref([]);
+  const locations = ref([]);
+  const categories = ref([]);
+  const accessories = ref([]);
+  const phones = ref([]);
+  const laptops = ref([]);
+
+  const errorDescription = ref('');
+  const errorTitle = ref('');
+  const errorPrice = ref('');
+  const errorNumber = ref('');
+  const errorStatus = ref('');
+  const errorCategory = ref('');
+  const errorLocation = ref('');
+  const errorFile1 = ref('');
+  const errorFile2 = ref('');
+  const errorFile3 = ref('');
+  const errorFile4 = ref('');
+  const errorColor = ref('');
+  const errorCapacity = ref('');
+
+  const isLoading = ref(false);
+  const showCreate = ref(false);
+  const save = ref(false);
+  const update = ref(false);
+  const file2 = ref(false);
+  const file3 = ref(false);
+  const file4 = ref(false);
+  
+  const form = reactive({
+      id: '',
+      title: '',
+      description: '',
+      price:'',
+      number: '',
+      status: '',
+      choose: 0,
+      image1: '',
+      image2: 'null',
+      image3: 'null',
+      image4: 'null',
+      user_id:'',
+      category_id: '',
+      color: '',
+      capacity: '',
+      location_id:'',
+      accessory_id:'0',
+      phone_id:'0',
+      laptop_id:'0'
+  });
+
+  const reset = () => {
+    form.title = '',
+    form.description = '',
+    form.price = '',
+    form.number = '',
+    form.status = '',
+    form.choose = 0,
+    form.image1 = '',
+    form.image2 = 'null',
+    form.image3 = 'null',
+    form.image4 = 'null',
+    form.user_id ='',
+    form.category_id = '',
+    form.location_id ='',
+    form.color = '',
+    form.capacity = '',
+    form.location_id ='',
+    form.accessory_id ='0',
+    form.phone_id ='0',
+    form.laptop_id ='0'
+  }
+  
+  const getResults = (page) => {
+    isLoading.value = true;
+    if (page === 'undefined') { 
+        page = 1;
+    }
+
+    axios.get('/api/admin/product?page=' + page,{
+        headers:{
+            Authorization: ' Bearer ' + token
         }
-    }
+    })
+      .then(response => { 
+        setTimeout(() => isLoading.value = false,1000);
+        products.value = response.data;
+        closeProduct();
+        reset();
+      })
+  };
 
-    const products = ref([]);
-    
-    const errorDescription = ref('');
-    const errorTitle = ref('');
-    const errorPrice = ref('');
-    const errorNumber = ref('');
-    const errorStatus = ref('');
-    const errorCategory = ref('');
-    const errorLocation = ref('');
-    const errorFile1 = ref('');
-    const errorFile2 = ref('');
-    const errorFile3 = ref('');
-    const errorFile4 = ref('');
-    const errorColor = ref('');
-    const errorCapacity = ref('');
+  const getInfoAdmin = () =>{
+    const token = localStorage.getItem('token');
+    axios.get('/api/user',{
+        headers:{
+            Authorization: ' Bearer ' + token
+        }
+    })
+    .then(response => {
+        form.user_id = response.data[0].id;
+    })
+  }
 
+  const getCategory = () => {
+    axios.get('/api/category')
+    .then( response => {
+      categories.value = response.data;
+    })
+  };
+  
+  const getAccessory = () => {
+    axios.get('/api/accessory')
+    .then( response => {
+      accessories.value = response.data;
+    })
+  };
+  
+  const getPhone = () => {
+    axios.get('/api/phone')
+    .then( response => {
+      phones.value = response.data;
+    })
+  };
+  
+  const getLaptop = () => {
+    axios.get('/api/laptop')
+    .then( response => {
+      laptops.value = response.data;
+    })
+  };
+  
+  const getLocation = () => {
+    axios.get('/api/location')
+    .then( response => {
+      locations.value = response.data;
+    })
+  };
 
-    
-    const form = reactive({
-        id: '',
-        title: '',
-        description: '',
-        price:'',
-        number: '',
-        status: '',
-        choose: 0,
-        image1: '',
-        image2: 'null',
-        image3: 'null',
-        image4: 'null',
-        user_id:'',
-        category_id: '',
-        color: '',
-        capacity: '',
-        location_id:'',
-        accessory_id:'0',
-        phone_id:'0',
-        laptop_id:'0'
-    });
-
-    const reset = () => {
-      form.title = '',
-      form.description = '',
-      form.price = '',
-      form.number = '',
-      form.status = '',
-      form.choose = 0,
-      form.image1 = '',
-      form.image2 = '',
-      form.image3 = '',
-      form.image4 = '',
-      form.user_id ='',
-      form.category_id = '',
-      form.location_id ='',
-      form.color = '',
-      form.capacity = '',
-      form.location_id ='',
-      form.accessory_id ='0',
-      form.phone_id ='0',
-      form.laptop_id ='0'
-    }
-
-    const getInfoAdmin = () =>{
-      const token = localStorage.getItem('token');
-      axios.get('/api/user',{
-          headers:{
+  const createProduct = () => {
+      const formData = new FormData();
+      formData.append('title', form.title);
+      formData.append('description', form.description);
+      formData.append('price', form.price);
+      formData.append('number', form.number);
+      formData.append('status', form.status);
+      formData.append('choose', form.choose);
+      formData.append('file1', form.image1);
+      formData.append('file2', form.image2);
+      formData.append('file3', form.image3);
+      formData.append('file4', form.image4);
+      formData.append('user_id', form.user_id);
+      formData.append('category_id', form.category_id);
+      formData.append('location_id', form.location_id);
+      formData.append('color', form.color);
+      formData.append('capacity', form.capacity);
+      formData.append('phone_id', form.phone_id);
+      formData.append('laptop_id', form.laptop_id);
+      formData.append('accessory_id', form.accessory_id);
+      
+      axios.post('/api/product/create', formData,{
+          headers: {
+              'content-type': 'multipart/form-data',
               Authorization: ' Bearer ' + token
           }
       })
-      .then(response => {
-          form.user_id = response.data[0].id;
+      .then(response =>{
+          getResults();
+          reset();
+          router.push({ name: "Product" });
+          form.image1 = "";
+          closeProduct();
       })
-    }
+      .catch(function (error){
+          if(error.response){
+              if (error.response.status === 422) {
+                  setTimeout(() => isLoading.value = false,1000);
+                  errorTitle.value = error.response.data.errors.title;
+                  errorDescription.value = error.response.data.errors.description;
+                  errorPrice.value = error.response.data.errors.price;
+                  errorNumber.value = error.response.data.errors.number;
+                  errorCategory.value = error.response.data.errors.category_id;
+                  errorLocation.value = error.response.data.errors.location_id;
+                  errorStatus.value = error.response.data.errors.status;
+                  errorFile1.value = error.response.data.errors.file1;
+                  errorFile2.value = error.response.data.errors.file2;
+                  errorFile3.value = error.response.data.errors.file3;
+                  errorFile4.value = error.response.data.errors.file4;
+                  errorColor.value = error.response.data.errors.color;
+                  errorCapacity.value = error.response.data.errors.capacity;
 
-    const categories = ref([]);
-    const accessories = ref([]);
-    const phones = ref([]);
-    const laptops = ref([]);
-
-    const getCategory = () => {
-      axios.get('/api/category')
-      .then( response => {
-        categories.value = response.data;
+              }
+              else if (error.request) {
+                  console.log(error.request);
+              } else {
+                  console.log('Error', error.message);
+              }
+          }
       })
-    };
-    
-    const getAccessory = () => {
-      axios.get('/api/accessory')
-      .then( response => {
-        accessories.value = response.data;
-      })
-    };
-    
-    const getPhone = () => {
-      axios.get('/api/phone')
-      .then( response => {
-        phones.value = response.data;
-      })
-    };
-    
-    const getLaptop = () => {
-      axios.get('/api/laptop')
-      .then( response => {
-        laptops.value = response.data;
-      })
-    };
+  };
+  
 
-    const locations = ref([]);
-   
-    const getLocation = () => {
-      axios.get('/api/location')
-      .then( response => {
-        locations.value = response.data;
-      })
-    };
-
-    const createProduct = () => {
-        const formData = new FormData();
-        formData.append('title', form.title);
-        formData.append('description', form.description);
-        formData.append('price', form.price);
-        formData.append('number', form.number);
-        formData.append('status', form.status);
-        formData.append('choose', form.choose);
-        formData.append('file1', form.image1);
-        formData.append('file2', form.image2);
-        formData.append('file3', form.image3);
-        formData.append('file4', form.image4);
-        formData.append('user_id', form.user_id);
-        formData.append('category_id', form.category_id);
-        formData.append('location_id', form.location_id);
-        formData.append('color', form.color);
-        formData.append('capacity', form.capacity);
-        formData.append('phone_id', form.phone_id);
-        formData.append('laptop_id', form.laptop_id);
-        formData.append('accessory_id', form.accessory_id);
-        
-        axios.post('/api/product/create', formData,{
-            headers: {
-                'content-type': 'multipart/form-data'
-            }
-        })
-        .then(response =>{
-            getProduct();
-            reset();
-            form.image1 = ""
-            closeProduct();
-            form.id = response.data;
-        })
-        .catch(function (error){
-            if(error.response){
-                if (error.response.status === 422) {
-                    errorTitle.value = error.response.data.errors.title;
-                    errorDescription.value = error.response.data.errors.description;
-                    errorPrice.value = error.response.data.errors.price;
-                    errorNumber.value = error.response.data.errors.number;
-                    errorCategory.value = error.response.data.errors.category_id;
-                    errorLocation.value = error.response.data.errors.location_id;
-                    errorStatus.value = error.response.data.errors.status;
-                    errorFile1.value = error.response.data.errors.file1;
-                    errorFile2.value = error.response.data.errors.file2;
-                    errorFile3.value = error.response.data.errors.file3;
-                    errorFile4.value = error.response.data.errors.file4;
-                    errorColor.value = error.response.data.errors.color;
-                    errorCapacity.value = error.response.data.errors.capacity;
-
-                }
-                else if (error.request) {
-                    console.log(error.request);
-                } else {
-                    console.log('Error', error.message);
-                }
-            }
-        })
-    };
-    
-
-    const choose = (product) => {
-        if(product.choose > 0){
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+  const choose = (product) => {
+      if(product.choose > 0){
+          return true;
+      }
+      else {
+          return false;
+      }
+  }
 
 
 
-    const chooseTrue = reactive({
-        choose: 1,
-    });
-    const chooseFalse = reactive({
-        choose: 0,
-    });
+  const chooseTrue = reactive({
+      choose: 1,
+  });
+  const chooseFalse = reactive({
+      choose: 0,
+  });
 
-    const updateChoose = (product) => {
-        form.id = product.id;
-        if (product.choose == 0) {
-           return axios.post(`/api/product/updated/${form.id}`, chooseTrue)
-            .then(response =>{
-                getProduct();
-                closeProduct();
-            })
-        }
-        else {
-            return axios.post(`/api/product/updated/${form.id}`, chooseFalse)
-            .then(response =>{
-                getProduct();
-                closeProduct();
-            })
-        }
-        
-    }
-    const editProduct = (product) => {
-      showCreate.value = true;
-      save.value = false;
-      update.value = true;
+  const updateChoose = (product) => {
       form.id = product.id;
-      form.description = product.description;
-      form.image = product.image;
-      form.status = product.status;
-      form.title = product.title;
-      console.log(form.id)
-    }
+      if (product.choose == 0) {
+          return axios.post(`/api/product/updated/${form.id}`, chooseTrue,{
+              headers: {
+                  Authorization: ' Bearer ' + token
+              }
+          })
+          .then(response =>{
+              getResults();
+              closeProduct();
+          })
+      }
+      else {
+          return axios.post(`/api/product/updated/${form.id}`, chooseFalse,{
+              headers: {
+                  Authorization: ' Bearer ' + token
+              }
+          })
+          .then(response =>{
+              getResults();
+              closeProduct();
+          })
+      }
+      
+  }
+  const editProduct = (product) => {
+    showCreate.value = true;
+    save.value = false;
+    update.value = true;
+    form.id = product.id,
+    form.title = product.title,
+    form.description = product.description,
+    form.price = product.price,
+    form.number = product.number,
+    form.status = product.status,
+    form.image1 = product.image1,
+    form.image2 = 'null',
+    form.image3 = 'null',
+    form.image4 = 'null',
+    form.category_id = product.category_id,
+    form.location_id =product.location_id,
+    form.color = product.color,
+    form.capacity = product.capacity,
+    form.accessory_id = pagination.accessory_id,
+    form.phone_id = product.phone_id,
+    form.laptop_id = product.laptop_id
+  }
 
-    const updateProduct = () => {
-        const formData = new FormData();
-        formData.append('description', form.description);
-        formData.append('status', form.status);
-        formData.append('title', form.title);
-        formData.append('file', form.image);
-        axios.post(`/api/product/update/${form.id}`, formData,{
+  const updateProduct = () => {
+      const formData = new FormData();
+      formData.append('title', form.title);
+      formData.append('description', form.description);
+      formData.append('price', form.price);
+      formData.append('number', form.number);
+      formData.append('status', form.status);
+      formData.append('choose', form.choose);
+      formData.append('file1', form.image1);
+      formData.append('file2', form.image2);
+      formData.append('file3', form.image3);
+      formData.append('file4', form.image4);
+      formData.append('category_id', form.category_id);
+      formData.append('location_id', form.location_id);
+      formData.append('color', form.color);
+      formData.append('capacity', form.capacity);
+      axios.post(`/api/product/update/${form.id}`, formData,{
+          headers: {
+              'content-type': 'multipart/form-data',
+              Authorization: ' Bearer ' + token
+          }
+      })
+      .then(response =>{
+          getResults();
+          reset();
+          closeProduct();
+      })
+      .catch(function (error){
+          if(error.response){
+              if (error.response.status === 422) {
+                  setTimeout(() => isLoading.value = false,1000);
+                  errorTitle.value = error.response.data.errors.title;
+                  errorDescription.value = error.response.data.errors.description;
+                  errorPrice.value = error.response.data.errors.price;
+                  errorNumber.value = error.response.data.errors.number;
+                  errorCategory.value = error.response.data.errors.category_id;
+                  errorLocation.value = error.response.data.errors.location_id;
+                  errorStatus.value = error.response.data.errors.status;
+                  errorFile1.value = error.response.data.errors.file1;
+                  errorFile2.value = error.response.data.errors.file2;
+                  errorFile3.value = error.response.data.errors.file3;
+                  errorFile4.value = error.response.data.errors.file4;
+                  errorColor.value = error.response.data.errors.color;
+                  errorCapacity.value = error.response.data.errors.capacity;
+
+              }
+              else if (error.request) {
+                  console.log(error.request);
+              } else {
+                  console.log('Error', error.message);
+              }
+          }
+      })
+  };
+
+  const deleteProduct  = (product) => {
+      const remove = '/api/product/delete/' + product.id;
+        if(confirm('Are you sure, you want to delete this data?')) {
+          axios.delete(remove,{
             headers: {
-                'content-type': 'multipart/form-data'
+                Authorization: ' Bearer ' + token
             }
         })
         .then(response =>{
-            getProduct();
-            reset();
-            closeProduct();
+           getResults();
         })
-    };
+      }
+  };
 
-    const deleteProduct  = (product) => {
-        const remove = '/api/product/delete/' + product.id;
-        axios.delete(remove)
-        .then(response =>{
-            getProduct();
-        })
-    };
-
-    const getProduct = () => {
-        axios.get('/api/product')
-        .then( response => {
-            products.value = response.data;
-        })
-    };
-
-  onMounted(() => {
-     getProduct();
-     getInfoAdmin();
-     getCategory();
-     getLocation();
-     getAccessory();
-     getPhone();
-     getLaptop();
-  })
-
-  const save = ref(false);
-  const update = ref(false);
-
-  const showCreate = ref(false);
   const showCreateProduct = () => {
     showCreate.value = true;
     save.value = true;
@@ -320,9 +393,7 @@
     reset();
   };
   
-  const file2 = ref(false);
-  const file3 = ref(false);
-  const file4 = ref(false);
+  
 
   let imageFile = ref('');
   const handleImage1 = (e) => {
@@ -372,6 +443,19 @@
         }
     }
   };
+
+
+  onMounted(() => {
+     getResults();
+     getInfoAdmin();
+     getCategory();
+     getLocation();
+     getAccessory();
+     getPhone();
+     getLaptop();
+  })
+
+ 
   
  
 </script>
@@ -403,7 +487,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="product in products" class="border-b bg-white last:border-none">
+                <tr v-for="product in products.data" :key="product.id" class="border-b bg-white last:border-none">
                   <td class="py-4">
                     <span class="text-sm font-medium bg-white ">
                       {{ product.id }}
@@ -438,6 +522,9 @@
                 </tr>
               </tbody>
             </table>
+            <div class="flex items-center justify-center mt-10">
+              <pagination class="" :data="products" v-bind:showDisabled="true" icon="chevron" v-on:change-page="getResults"></pagination>
+            </div>
           </div>
         </div>
       </div>
@@ -493,7 +580,7 @@
                        <option :value="location.id" v-for="location in locations" :key="location.id">{{location.name}}</option>
                     </select>
                     <span class=" text-red-500 text-[14px] invalid-feedback px-5" v-html="errorLocation"></span>
-                    <select v-if="form.category_id == 1"  v-model="form.phone_id"  class="outline-0 px-2 py-2 bg-gray-100 is-input-start mx-5 my-5">
+                    <select v-if="form.category_id == 1 || form.category_id == 6"  v-model="form.phone_id"  class="outline-0 px-2 py-2 bg-gray-100 is-input-start mx-5 my-5">
                        <option value="" disabled>Chon điện thoại</option>
                        <option :value="phone.id" v-for="phone in phones" :key="phone.id">{{phone.name}}</option>
                     </select>
@@ -523,7 +610,9 @@
                       <input v-show="file4" type="file"  :class="{'is-invalid': errorFile4}" @change="handleImage4" class="outline-0 px-5 py-1 bg-gray-100 is-input-start mx-5"  placeholder="Enter url"/>
                     </div>
                     <div class="flex justify-center items-center ">
-                        <button v-show="save" @click.prevent="createProduct" type="submit" class="text-white my-5 bg-green-500 hover:bg-green-300 focus:outline-none font-medium text-sm rounded-lg px-5 py-2.5 text-center mr-5">Create</button>
+                        <button v-show="save" @click.prevent="createProduct" type="submit" class="text-white bg-green-500 hover:bg-green-300 focus:outline-none font-medium text-sm rounded-lg px-5 py-2.5 text-center mr-5">
+                           Tạo mới
+                        </button>
                         <button v-show="update" @click.prevent="updateProduct" type="submit" class="text-white my-5 bg-green-500 hover:bg-green-300 focus:outline-none font-medium text-sm rounded-lg px-5 py-2.5 text-center mr-5">update</button>
                         <button @click="closeProduct" class="text-white my-5 bg-green-500 hover:bg-green-300 focus:outline-none font-medium text-sm rounded-lg px-5 py-2.5 text-center mr-5">Cancel</button>
                     </div>
@@ -531,5 +620,7 @@
             </div>
         </div>
     </div>
+    <loadingCreateButton :is-loading="isLoading" class="text-orange fixed  bg-opacity-25 flex justify-center items-center">
+    </loadingCreateButton>
   </div>
 </template>

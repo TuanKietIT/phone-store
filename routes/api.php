@@ -112,6 +112,13 @@ Route::middleware(['auth:sanctum'])->group(function(){
         Route::post('news/updated/{id}','updateStatus');
         Route::post('news/update/{id}','update');
     });
+    Route::controller(ProductController::class)->group(function(){
+        Route::get('admin/product','home');
+        Route::post('product/create','create');
+        Route::delete('product/delete/{id}','delete');
+        Route::post('product/updated/{id}','updateChoose');
+        Route::post('product/update/{id}','update');
+    });
 });
 
 Route::controller(PageController::class)->group(function(){
@@ -146,9 +153,8 @@ Route::controller(ContactController::class)->group(function(){
 Route::controller(ProductController::class)->group(function(){
     Route::get('product','index');
     Route::get('home/iphone','showIphone');
+    Route::get('home/samsung','showSamSung');
+    Route::get('home/laptop','showLaptop');
+    Route::get('home/ipad','showIpad');
     Route::get('home/iphone/{id}','showByID');
-    Route::post('product/create','create');
-    Route::delete('product/delete/{id}','delete');
-    Route::post('product/updated/{id}','updateChoose');
-    Route::post('product/update/{id}','update');
 });

@@ -78,7 +78,11 @@
   };
 
   const updateAccessory  = (values, {resetForm}) => {
-    axios.post(`/api/accessory/update/${form.id}`, values)
+    axios.post(`/api/accessory/update/${form.id}`, values,{
+          headers:{
+              Authorization: ' Bearer ' + token
+          }
+      })
     .then(response =>{
         getResults();
         closeAccessory();
@@ -97,7 +101,11 @@
   const deleteAccessory  = (accessory) => {
     const remove = '/api/accessory/delete/' + accessory.id;
     if(confirm('Are you sure, you want to delete this data?')) {
-        axios.delete(remove)
+        axios.delete(remove,{
+          headers:{
+              Authorization: ' Bearer ' + token
+          }
+        })
         .then(response =>{
            getResults();
         })

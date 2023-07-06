@@ -47,7 +47,11 @@
   });
 
   const createMenu = (values, {resetForm}) => {
-    axios.post('/api/menu/create', values)
+    axios.post('/api/menu/create', values,{
+          headers:{
+              Authorization: ' Bearer ' + token
+          }
+      })
     .then(response =>{
       getResults();
         resetForm();
@@ -55,7 +59,11 @@
   };
 
   const updateMenu  = (values, {resetForm}) => {
-    axios.post(`/api/menu/update/${form.id}`, values)
+    axios.post(`/api/menu/update/${form.id}`, values,{
+          headers:{
+              Authorization: ' Bearer ' + token
+          }
+      })
     .then(response =>{
       getResults();
         resetForm();
@@ -76,7 +84,11 @@
   const deleteMenu  = (menu) => {
     const remove = '/api/menu/delete/' + menu.id;
     if(confirm('Are you sure, you want to delete this data?')) {
-        axios.delete(remove)
+        axios.delete(remove,{
+          headers:{
+              Authorization: ' Bearer ' + token
+          }
+        })
         .then(response =>{
            getResults(); 
         })

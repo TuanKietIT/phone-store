@@ -13,6 +13,7 @@
   import * as yup from 'yup';
   import moment from "moment";
 
+  const token = localStorage.getItem('token');
 
   const pages = ref([]);
 
@@ -27,8 +28,6 @@
     if (page === 'undefined') {
       page = 1;
     }
-
-    const token = localStorage.getItem('token');
     axios.get('/api/admin/page?page=' + page,{
         headers:{
             Authorization: ' Bearer ' + token
@@ -47,7 +46,11 @@
   });
 
   const createPage = (values, {resetForm}) => {
-    axios.post('/api/page/create', values)
+    axios.post('/api/page/create', values,{
+        headers:{
+            Authorization: ' Bearer ' + token
+        }
+    })
     .then(response =>{
       getResults();
         resetForm();
@@ -55,7 +58,11 @@
   };
 
   const updatePage  = (values, {resetForm}) => {
-    axios.post(`/api/page/update/${form.id}`, values)
+    axios.post(`/api/page/update/${form.id}`, values,{
+        headers:{
+            Authorization: ' Bearer ' + token
+        }
+    })
     .then(response =>{
       getResults();
         resetForm();
@@ -75,8 +82,12 @@
   }
   const deletePage  = (item) => {
     const remove = '/api/page/delete/' + item.id;
-    if(confirm('Are you sure, you want to delete this data?')) {
-        axios.delete(remove)
+        if(confirm('Are you sure, you want to delete this data?')) {
+            axios.delete(remove,{
+            headers:{
+                Authorization: ' Bearer ' + token
+            }
+        })
         .then(response =>{
            getResults(); 
         })

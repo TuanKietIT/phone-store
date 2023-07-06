@@ -13,7 +13,7 @@
   import * as yup from 'yup';
   import moment from "moment";
 
-
+  const token = localStorage.getItem('token');
   const categories = ref([]);
 
   const currentPage = ref(1);
@@ -30,8 +30,6 @@
     }
 
     // Using vue-resource as an example
-
-    const token = localStorage.getItem('token');
     axios.get('/api/admin/category?page=' + page ,{
           headers:{
               Authorization: ' Bearer ' + token
@@ -58,7 +56,8 @@
     formData.append('name', form.name);
     axios.post('/api/category/create', formData,{
         headers: {
-            'content-type': 'multipart/form-data'
+            'content-type': 'multipart/form-data',
+            Authorization: ' Bearer ' + token
         }
     })
     .then(response =>{
@@ -80,7 +79,11 @@
   };
 
   const updateCategory  = (values, {resetForm}) => {
-    axios.post(`/api/category/update/${form.id}`, values)
+    axios.post(`/api/category/update/${form.id}`, values,{
+          headers:{
+              Authorization: ' Bearer ' + token
+          }
+      })
     .then(response =>{
         getResults();
         closeCategory();
@@ -99,7 +102,11 @@
   const deleteCategory  = (category) => {
     const remove = '/api/category/delete/' + category.id;
     if(confirm('Are you sure, you want to delete this data?')) {
-        axios.delete(remove)
+        axios.delete(remove,{
+          headers:{
+              Authorization: ' Bearer ' + token
+          }
+        })
         .then(response =>{
            getResults();
         })

@@ -80,7 +80,11 @@
 
 
   const updateLaptop  = (values, {resetForm}) => {
-    axios.post(`/api/laptop/update/${form.id}`, values)
+    axios.post(`/api/laptop/update/${form.id}`, values,{
+          headers:{
+              Authorization: ' Bearer ' + token
+          }
+      })
     .then(response =>{
       getResults();
         resetForm();
@@ -100,7 +104,11 @@
   const deleteLaptop  = (laptop) => {
     const remove = '/api/laptop/delete/' + laptop.id;
     if(confirm('Are you sure, you want to delete this data?')) {
-        axios.delete(remove)
+        axios.delete(remove,{
+          headers:{
+              Authorization: ' Bearer ' + token
+          }
+      })
         .then(response =>{
            getResults(); 
         })
