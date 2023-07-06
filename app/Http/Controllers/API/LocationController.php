@@ -9,7 +9,7 @@ use App\Models\Location;
 class LocationController extends Controller
 {
     public function index(){
-        $location = Location::orderBy('id','desc')->get();
+        $location = Location::orderBy('id','asc')->get();
         return response()->json($location,200);
     }
     public function home(){

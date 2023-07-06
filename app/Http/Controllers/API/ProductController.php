@@ -18,6 +18,18 @@ class ProductController extends Controller
         $product = Product::orderBy('id','asc')->paginate(6);
         return response()->json($product,200);
     }
+    public function showPhone(){
+        $product = Product::with('category','location','user')->where('category_id','1')->where('choose',1)->orderBy('id','desc')->paginate(12);
+        return response()->json($product,200);
+    }
+    public function showHomeLaptop(){
+        $product = Product::with('category','location','user')->where('category_id','2')->where('choose',1)->orderBy('id','desc')->paginate(12);
+        return response()->json($product,200);
+    }
+    public function showHomeIpad(){
+        $product = Product::with('category','location','user')->where('category_id','6')->where('choose',1)->orderBy('id','desc')->paginate(12);
+        return response()->json($product,200);
+    }
     public function showIphone(){
         $product = Product::with('category','location','user')->where('category_id','1')->where('choose',1)->where('phone_id',1)->orderBy('id','desc')->paginate(8);
         return response()->json($product,200);

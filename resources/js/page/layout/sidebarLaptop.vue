@@ -3,13 +3,13 @@
   import { reactive,ref, onMounted } from 'vue'
 
 
-  const phones = ref([]);
+  const laptops = ref([]);
   const locations = ref([]);
   
-  const getPhone = () => {
-    axios.get('/api/phone')
+  const getLaptop = () => {
+    axios.get('/api/laptop')
     .then( response => {
-      phones.value = response.data;
+      laptops.value = response.data;
     })
   };
   const getLocation = () => {
@@ -20,7 +20,7 @@
   };
 
   onMounted(() => {
-    getPhone();
+    getLaptop();
     getLocation();
   })
 </script>
@@ -36,7 +36,7 @@
         </ul>
         <span class="text-[18px] font-medium text-sky-500 focus:outline-none ">Danh mục sản phẩm</span>
         <ul class="flex flex-col gap-y-4 py-3">
-            <li v-for="item in phones" class="">
+            <li v-for="item in laptops" class="">
               <a :href="item.url" class="flex items-center is-bg-green-page-500 gap-x-1 text-gray-800 focus:outline-none">
                 <span class="uppercase ">{{ item.name }}</span>
               </a>

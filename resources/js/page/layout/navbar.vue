@@ -90,16 +90,17 @@ import axios from 'axios';
         </li>
     </ul>
     <div class="md:flex md:flex-row md:justify-between text-center mt-5 text-sm sm:text-base">
-      <div class="w-1/5 flex justify-center ">
-         <span class="text-center">cac</span>
+      <div class="w-2/6 flex justify-center ">
+         <img src="../images/logo.PNG" alt="" class="h-8 w-8">
+         <span class="uppercase">Uy tính - đảm bảo - hiệu quả - chất lượng  </span>
       </div>
-      <div class="mt-2 w-4/5">
+      <div class=" w-4/6">
         <a v-show="showBar" class="uppercase text-gray-600  hover:text-purple-600">
           <svg class="w-10 h-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
           </svg>
         </a>    
-        <a  v-for="item in pages" :href="item.url" class="uppercase text-gray-600  hover:text-purple-600 ml-2 py-4 pl-8 ">{{ item.name }}</a>    
+        <a  v-for="item in pages" :href="item.url" class="uppercase text-gray-600  hover:text-purple-600 ml-2 py-4 pl-6 ">{{ item.name }}</a>    
       </div>
     </div><!-- Main Navigation -->
 </template>

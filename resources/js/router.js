@@ -15,6 +15,9 @@ import Wiki from './admin/home/component/wiki.vue';
 import News from './admin/home/component/news.vue';
 import Product from './admin/home/component/product.vue';
 import HomePage from './page/home/homePage.vue';
+import HomePhone from './page/home/homePhone.vue';
+import HomeLaptop from './page/home/homeLaptop.vue';
+import HomeIpad from './page/home/homeIpad.vue';
 import Error from './notFound.vue';
 
 
@@ -25,6 +28,24 @@ const routes = [
         path:'/',
         name: 'HomePage',
         component: HomePage,
+    },
+    //home Pages 
+    {
+        path:'/home/phone',
+        name: 'HomePhone',
+        component: HomePhone,
+    },
+    //home Pages 
+    {
+        path:'/home/laptop',
+        name: 'HomeLaptop',
+        component: HomeLaptop,
+    },
+    //home Pages 
+    {
+        path:'/home/ipad',
+        name: 'HomeIpad',
+        component: HomeIpad,
     },
     //admin Category 
     {

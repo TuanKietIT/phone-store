@@ -11,6 +11,8 @@
     const samsung = ref([]);
     const laptop = ref([]);
     const ipad = ref([]);
+    const jobWiki = ref([]);
+
     const formatPrice = (value) =>{
       let val = (value/1).toFixed(0).replace('.', ',');
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -41,11 +43,18 @@
         laptop.value = response.data;
       })
     };
+    const getJobWiki = () => {
+      axios.get('/api/home/jobwiki')
+      .then(response => {
+        jobWiki.value = response.data;
+      })
+    };
     onMounted(() => {
       getResults();
       getSamSung();
       getLaptop();
       getIpad();
+      getJobWiki();
     })
 </script>
 
@@ -64,9 +73,16 @@
     <div class="flex  w-full font-sans">
       <div class="">
         <div class="mt-5 shadow-x-full px-10 py-5">
-          <div class="mx-3">
-            <span class="text-[20px] text-sky-500 mt-10 font-medium uppercase">iphone chính hãng</span>
+          <div class="mx-3 flex justify-between">
+            <span class="text-[20px] text-sky-600 mt-10 font-medium uppercase">Iphone chính hãng</span>
+            <span class=" flex justify-center items-center text-[20px] text-green-300 mt-10 font-medium uppercase"> 
+              Sản phẩm mới
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ml-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </span>
           </div>
+          <hr class="mx-2 h-2 bg-cyan-300"/>
           <div class="grid grid-flow-row grid-cols-1 md:grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 xl:grid-cols-4 gap-10">
             <div v-for="product in iphone.data" :key="product.id" class="my-5 ml-2 rounded-lg shadow-product-is">
               <a href="#" class="flex flex-row justify-center ">
@@ -87,10 +103,16 @@
               </div>
             </div>
           </div>
-          <div class="mx-3">
-            <span class="text-[20px] text-sky-500 mt-10 font-medium uppercase">sam sung chính hãng</span>
-            <hr class="px-2"/>
+          <div class="mx-3 flex justify-between">
+            <span class="text-[20px] text-sky-600 mt-10 font-medium uppercase">sam sung chính hãng</span>
+            <span class=" flex justify-center items-center text-[20px] text-green-300 mt-10 font-medium uppercase"> 
+              Sản phẩm mới
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ml-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </span>
           </div>
+          <hr class="mx-2 h-2 bg-cyan-300"/>
           <div class="grid grid-flow-row grid-cols-1 md:grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 xl:grid-cols-4 gap-10">
             <div v-for="item in samsung.data" :key="item.id" class="my-5 ml-2 rounded-lg shadow-product-is">
               <a href="#" class="flex flex-row justify-center ">
@@ -111,10 +133,16 @@
               </div>
             </div>
           </div>
-          <div class="mx-3">
-            <span class="text-[20px] text-sky-500 mt-10 font-medium uppercase">ipad chính hãng</span>
-            <hr class="px-2"/>
+          <div class="mx-3 flex justify-between">
+            <span class="text-[20px] text-sky-600 mt-10 font-medium uppercase">Máy tính bảng chính hãng</span>
+            <span class=" flex justify-center items-center text-[20px] text-green-300 mt-10 font-medium uppercase"> 
+              Sản phẩm mới
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ml-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </span>
           </div>
+          <hr class="mx-2 h-2 bg-cyan-300"/>
           <div class="grid grid-flow-row grid-cols-1 md:grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 xl:grid-cols-4 gap-10">
             <div v-for="itemIpad in ipad.data" :key="itemIpad.id" class="my-5 ml-2 rounded-lg shadow-product-is">
               <a href="#" class="flex flex-row justify-center ">
@@ -135,10 +163,16 @@
               </div>
             </div>
           </div>
-          <div class="mx-3">
-            <span class="text-[20px] text-sky-500 mt-10 font-medium uppercase">Laptop chính hãng</span>
-            <hr class="px-2"/>
+          <div class="mx-3 flex justify-between">
+            <span class="text-[20px] text-sky-600 mt-10 font-medium uppercase">Laptop chính hãng</span>
+            <span class=" flex justify-center items-center text-[20px] text-green-300 mt-10 font-medium uppercase"> 
+              Sản phẩm mới
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ml-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </span>
           </div>
+          <hr class="mx-2 h-2 bg-cyan-300"/>
           <div class="grid grid-flow-row grid-cols-1 md:grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 xl:grid-cols-4 gap-10">
             <div v-for="itemLaptop in laptop.data" :key="itemLaptop.id" class="my-5 ml-2 rounded-lg shadow-product-is">
               <a href="#" class="flex flex-row justify-center ">
@@ -162,6 +196,29 @@
         </div>
       </div>
       
+    </div>
+    <div class="flex w-full font-sans">
+      <div class="">
+        <div class="mt-5 shadow-x-full px-10 py-5">
+          <div class="mx-5 flex text-center items-center justify-center">
+            <span class="text-[20px] text-sky-500 mt-5 font-medium uppercase">Câu hỏi thường gặp</span>
+          </div>
+          <div class="grid grid-flow-row grid-cols-1 md:grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 xl:grid-cols-4 gap-5">
+            <div v-for="product in jobWiki" :key="product.id" class="my-7 ml-5 rounded-lg shadow-product-is">
+              <div class="p-4">
+                <h3><a href="#" class=" flex flex-row justify-center text-center">{{ product.name }}</a></h3>
+                <div class="flex flex-col justify-between items-center">
+                  <a class=" bg-gray-200 rounded-full mt-3 py-2 px-10 my-1 text-sm text-gray-700 hover:bg-green-300 hover:text-white flex flex-row justify-center" href="#">
+                    <router-link  :to="{ path: '/home/product/'+ product.id}" class="btn-see" >
+                        Xem thêm
+                    </router-link>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <footerVue />
   </div>

@@ -46,7 +46,6 @@ Route::middleware(['auth:sanctum'])->group(function(){
     });
 
     Route::controller(PhoneController::class)->group(function(){
-        Route::get('phone','index');
         Route::get('admin/phone','home');
         Route::post('phone/create','create');
         Route::delete('phone/delete/{id}','delete');
@@ -125,7 +124,7 @@ Route::controller(PageController::class)->group(function(){
     Route::get('page','index');
 });
 Route::controller(JobwikiController::class)->group(function(){
-    Route::get('jobwiki','index');
+    Route::get('home/jobwiki','index');
 });
 Route::controller(CategoryController::class)->group(function(){
     Route::get('category','index');
@@ -151,7 +150,9 @@ Route::controller(ContactController::class)->group(function(){
 });
 
 Route::controller(ProductController::class)->group(function(){
-    Route::get('product','index');
+    Route::get('home/product/phone','showPhone');
+    Route::get('home/product/laptop','showHomeLaptop');
+    Route::get('home/product/ipad','showHomeIpad');
     Route::get('home/iphone','showIphone');
     Route::get('home/samsung','showSamSung');
     Route::get('home/laptop','showLaptop');

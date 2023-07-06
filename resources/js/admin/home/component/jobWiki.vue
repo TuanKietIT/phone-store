@@ -13,6 +13,7 @@
   import * as yup from 'yup';
   import moment from "moment";
 
+  const token = localStorage.getItem('token');
 
   const jobWikis = ref([]);
 
@@ -28,7 +29,6 @@
       page = 1;
     }
 
-    const token = localStorage.getItem('token');
     axios.get('/api/admin/jobwiki?page=' + page,{
         headers:{
             Authorization: ' Bearer ' + token

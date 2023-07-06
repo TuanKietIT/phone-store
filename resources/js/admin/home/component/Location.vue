@@ -13,6 +13,8 @@
   import * as yup from 'yup';
   import moment from "moment";
 
+  const token = localStorage.getItem('token');
+
 
   const Locations = ref([]);
 
