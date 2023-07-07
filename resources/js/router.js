@@ -18,6 +18,9 @@ import HomePage from './page/home/homePage.vue';
 import HomePhone from './page/home/homePhone.vue';
 import HomeLaptop from './page/home/homeLaptop.vue';
 import HomeIpad from './page/home/homeIpad.vue';
+import HomeAccessory from './page/home/homeAccessory.vue';
+import HomeProduct from './page/home/homeProduct.vue';
+
 import Error from './notFound.vue';
 
 
@@ -46,6 +49,18 @@ const routes = [
         path:'/home/ipad',
         name: 'HomeIpad',
         component: HomeIpad,
+    },
+     //home Pages 
+     {
+        path:'/home/accessory',
+        name: 'HomeAccessory',
+        component: HomeAccessory,
+    },
+    //Product Post ID
+    { 
+        path: '/home/product/:id',
+        name: 'HomeProduct',
+        component: HomeProduct,
     },
     //admin Category 
     {

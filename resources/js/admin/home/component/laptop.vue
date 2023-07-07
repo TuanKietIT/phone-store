@@ -12,6 +12,7 @@
   import { Form, Field } from 'vee-validate';
   import * as yup from 'yup';
   import moment from "moment";
+  const token = localStorage.getItem('token');
 
 
   const lapTops = ref([]);

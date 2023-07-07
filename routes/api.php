@@ -151,8 +151,11 @@ Route::controller(ContactController::class)->group(function(){
 
 Route::controller(ProductController::class)->group(function(){
     Route::get('home/product/phone','showPhone');
+    Route::get('/product/{id}','showByID');
     Route::get('home/product/laptop','showHomeLaptop');
     Route::get('home/product/ipad','showHomeIpad');
+    Route::get('home/product/accessory','showHomeAccessory');
+    Route::get('home/product/suggest','home');
     Route::get('home/iphone','showIphone');
     Route::get('home/samsung','showSamSung');
     Route::get('home/laptop','showLaptop');

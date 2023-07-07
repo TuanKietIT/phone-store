@@ -15,7 +15,7 @@ class ProductController extends Controller
         return response()->json($product,200);
     }
     public function home(){
-        $product = Product::orderBy('id','asc')->paginate(6);
+        $product = Product::orderBy('id','desc')->paginate(8);
         return response()->json($product,200);
     }
     public function showPhone(){
@@ -28,6 +28,10 @@ class ProductController extends Controller
     }
     public function showHomeIpad(){
         $product = Product::with('category','location','user')->where('category_id','6')->where('choose',1)->orderBy('id','desc')->paginate(12);
+        return response()->json($product,200);
+    }
+    public function showHomeAccessory(){
+        $product = Product::with('category','location','user')->where('category_id','4')->where('choose',1)->orderBy('id','desc')->paginate(12);
         return response()->json($product,200);
     }
     public function showIphone(){
@@ -47,9 +51,21 @@ class ProductController extends Controller
         return response()->json($product,200);
     }
     public function showByID($id){
-        $product = Product::find($id);
-        return response()->json( $product);
+        $product = Product::with('category','location','user','accessory','phone','laptop')->where('choose','1')->findOrFail($id);
+        if($product){
+            return response()->json([
+                'status' => 200,
+                'product' => $product,
+            ],200);
+        } 
+        else{
+            return response()->json([
+                'status' => 404,
+                'message' => 'Not found ID',
+            ],404);
+        }
     }
+    
     public function create(Request $request){
         $validator = Validator::make($request->all(),[
             'title'=> 'required|max:190',

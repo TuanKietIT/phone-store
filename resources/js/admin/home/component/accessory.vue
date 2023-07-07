@@ -12,6 +12,7 @@
   import { Form, Field } from 'vee-validate';
   import * as yup from 'yup';
   import moment from "moment";
+  const token = localStorage.getItem('token');
 
 
   const accessories = ref([]);
@@ -29,7 +30,6 @@
       page = 1;
     }
 
-    const token = localStorage.getItem('token');
     axios.get('/api/admin/accessory?page=' + page,{
         headers:{
             Authorization: ' Bearer ' + token

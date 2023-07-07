@@ -49,6 +49,7 @@
         jobWiki.value = response.data;
       })
     };
+    
     onMounted(() => {
       getResults();
       getSamSung();
@@ -155,7 +156,7 @@
                 </div>
                 <div class="flex flex-col justify-between items-center">
                   <a class=" bg-gray-200 rounded-full py-2 px-8 my-1 text-sm text-gray-700 hover:bg-green-300 hover:text-white flex flex-row justify-center" href="#">
-                    <router-link  :to="{ path: '/home/itemIpad/'+ itemIpad.id}" class="btn-see" >
+                    <router-link  :to="{ path: '/home/product/'+ itemIpad.id}" class="btn-see" >
                         Xem thêm
                     </router-link>
                   </a>
@@ -185,7 +186,7 @@
                 </div>
                 <div class="flex flex-col justify-between items-center">
                   <a class=" bg-gray-200 rounded-full py-2 px-8 my-1 text-sm text-gray-700 hover:bg-green-300 hover:text-white flex flex-row justify-center" href="#">
-                    <router-link  :to="{ path: '/home/itemLaptop/'+ itemLaptop.id}" class="btn-see" >
+                    <router-link  :to="{ path: '/home/product/'+ itemLaptop.id}" class="btn-see" >
                         Xem thêm
                     </router-link>
                   </a>

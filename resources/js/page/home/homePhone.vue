@@ -1,6 +1,7 @@
 <script setup>
     import navbar from "../layout/navbar.vue";
     import sidebar from "../layout/sidebar.vue";
+    import footerVue from "../layout/footer.vue";
     import axios from 'axios';
     import { reactive,ref, onMounted } from 'vue'
     import pagination from 'laravel-vue-semantic-ui-pagination';
@@ -70,4 +71,5 @@
         </div>
       </div>
     </main>
+    <footerVue />
 </template>
