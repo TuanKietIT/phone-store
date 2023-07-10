@@ -65,7 +65,110 @@ class ProductController extends Controller
             ],404);
         }
     }
+
+    public function showLocationID($id){
+        $product = Product::where('location_id',$id)->where('choose','1')->get();
+        if($product){
+            return response()->json([
+                'status' => 200,
+                'product' => $product,
+            ],200);
+        }
+        else{
+            return response()->json([
+                'status' => 404,
+                'message' => 'Not found ID',
+            ],404);
+        }
+    }
+    public function showPhoneID($id){
+        $product = Product::where('phone_id',$id)->where('choose','1')->get();
+        if($product){
+            return response()->json([
+                'status' => 200,
+                'product' => $product,
+            ],200);
+        }
+        else{
+            return response()->json([
+                'status' => 404,
+                'message' => 'Not found ID',
+            ],404);
+        }
+    }
+    public function showPricePhone($index){
+        if($index == 1){
+            $product = Product::whereBetween('price', ['1000000', '3000000'])->where('category_id','1')->where('choose','1')->get();
+        }
+        if($index ==2){
+            $product = Product::whereBetween('price', ['3000000', '5000000'])->where('category_id','1')->where('choose','1')->get();
+        }
+        if($index ==3){
+            $product = Product::whereBetween('price', ['5000000', '8000000'])->where('category_id','1')->where('choose','1')->get();
+        }
+        if($index == 4){
+            $product = Product::whereBetween('price', ['8000000', '10000000'])->where('category_id','1')->where('choose','1')->get();
+        }
+        if($index == 5){
+            $product = Product::whereBetween('price', ['10000000', '12000000'])->where('category_id','1')->where('choose','1')->get();
+        }
+        if($index == 6){
+            $product = Product::whereBetween('price', ['12000000', '15000000'])->where('category_id','1')->where('choose','1')->get();
+        }
+        if($index == 6){
+            $product = Product::whereBetween('price', ['15000000', '18000000'])->where('category_id','1')->where('choose','1')->get();
+        }
+        if($index == 6){
+            $product = Product::whereBetween('price', ['15000000', '18000000'])->where('category_id','1')->where('choose','1')->get();
+        }
+
+        if($product){
+            return response()->json([
+                'status' => 200,
+                'product' => $product,
+            ],200);
+        }
+        else{
+            return response()->json([
+                'status' => 404,
+                'message' => 'Not found ID',
+            ],404);
+        }
+
+    }
+
+    public function showLaptopID($id){
+        $product = Product::where('laptop_id',$id)->where('choose','1')->get();
+        if($product){
+            return response()->json([
+                'status' => 200,
+                'product' => $product,
+            ],200);
+        }
+        else{
+            return response()->json([
+                'status' => 404,
+                'message' => 'Not found ID',
+            ],404);
+        }
+    }
     
+    public function showAccessoryID($id){
+        $product = Product::where('accessory_id',$id)->where('choose','1')->get();
+        if($product){
+            return response()->json([
+                'status' => 200,
+                'product' => $product,
+            ],200);
+        }
+        else{
+            return response()->json([
+                'status' => 404,
+                'message' => 'Not found ID',
+            ],404);
+        }
+    }
+
     public function create(Request $request){
         $validator = Validator::make($request->all(),[
             'title'=> 'required|max:190',

@@ -74,7 +74,7 @@ import axios from 'axios';
         </li>
         <li v-show="showLogin" class="px-1 py-1  my-5 flex  mx-5">
           <a  class="flex items-center text-gray-800 hover:font-medium hover:text-sky-300 focus:font-medium focus:text-sky-300 focus:outline-none">
-            <butt>Đăng nhập</butt>
+            <button>Đăng nhập</button>
           </a>
         </li>
         <li v-show="showInfo" class="px-1 py-1 my-2 flex  mx-1">
@@ -85,7 +85,7 @@ import axios from 'axios';
         </li>
         <li v-show="showLogout" class="px-1 py-1  my-5 flex  mx-5">
           <a  class="flex items-center text-gray-800 hover:font-medium hover:text-sky-300 focus:font-medium focus:text-sky-300 focus:outline-none">
-            <button @click.prevent="logout">Đăng xuất</button>
+            <button >Đăng xuất</button>
           </a>
         </li>
     </ul>

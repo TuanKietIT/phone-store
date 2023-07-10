@@ -214,7 +214,7 @@
       .then(response =>{
           getResults();
           reset();
-          router.push({ name: "Product" });
+          window.location.reload();
           form.image1 = "";
           closeProduct();
       })

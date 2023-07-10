@@ -155,6 +155,11 @@ Route::controller(ProductController::class)->group(function(){
     Route::get('home/product/laptop','showHomeLaptop');
     Route::get('home/product/ipad','showHomeIpad');
     Route::get('home/product/accessory','showHomeAccessory');
+    Route::get('/search/product/location/{id}','showLocationID');
+    Route::get('/search/product/accessory/{id}','showAccessoryID');
+    Route::get('/search/product/phone/{id}','showPhoneID');
+    Route::get('/search/product/laptop/{id}','showLaptopID');
+    Route::get('searchPrice/iphone/{index}','showPricePhone');
     Route::get('home/product/suggest','home');
     Route::get('home/iphone','showIphone');
     Route::get('home/samsung','showSamSung');

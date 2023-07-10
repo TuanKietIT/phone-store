@@ -20,6 +20,11 @@ import HomeLaptop from './page/home/homeLaptop.vue';
 import HomeIpad from './page/home/homeIpad.vue';
 import HomeAccessory from './page/home/homeAccessory.vue';
 import HomeProduct from './page/home/homeProduct.vue';
+import HomeSearchLocation  from './page/component/homeSearchLocation.vue';
+import HomeSearchAccessory  from './page/component/homeSearchAccessory.vue';
+import HomeSearchLaptop  from './page/component/homeSearchLaptop.vue';
+import HomeSearchPhone  from './page/component/homeSearchPhone.vue';
+import HomeSearchPrice  from './page/component/searchPrice.vue';
 
 import Error from './notFound.vue';
 
@@ -61,6 +66,37 @@ const routes = [
         path: '/home/product/:id',
         name: 'HomeProduct',
         component: HomeProduct,
+    },
+    //Product Search  Location
+    { 
+        path: '/home/location/:id',
+        name: 'HomeSearchLocation',
+        component: HomeSearchLocation,
+
+    },
+    //Product Search Accessory
+    { 
+        path: '/home/accessory/:id',
+        name: 'HomeSearchAccessory',
+        component: HomeSearchAccessory,
+    },
+    //Product Search Laptop
+    { 
+        path: '/home/laptop/:id',
+        name: 'HomeSearchLaptop',
+        component: HomeSearchLaptop,
+    },
+    //Product Search Phone
+    { 
+        path: '/home/phone/:id',
+        name: 'HomeSearchPhone',
+        component: HomeSearchPhone,
+    },
+    //Product Search Phone
+    { 
+        path: '/home/search/phone/:id',
+        name: 'HomeSearchPrice',
+        component: HomeSearchPrice,
     },
     //admin Category 
     {
