@@ -98,7 +98,7 @@ class ProductController extends Controller
     }
     public function showPricePhone($index){
         if($index == 1){
-            $product = Product::whereBetween('price', ['1000000', '3000000'])->where('category_id','1')->where('choose','1')->get();
+            $product = Product::whereBetween('price', ['1000000', '3000000'])->where('choose','1')->get();
         }
         if($index ==2){
             $product = Product::whereBetween('price', ['3000000', '5000000'])->where('category_id','1')->where('choose','1')->get();
@@ -115,10 +115,10 @@ class ProductController extends Controller
         if($index == 6){
             $product = Product::whereBetween('price', ['12000000', '15000000'])->where('category_id','1')->where('choose','1')->get();
         }
-        if($index == 6){
+        if($index == 7){
             $product = Product::whereBetween('price', ['15000000', '18000000'])->where('category_id','1')->where('choose','1')->get();
         }
-        if($index == 6){
+        if($index == 8){
             $product = Product::whereBetween('price', ['15000000', '18000000'])->where('category_id','1')->where('choose','1')->get();
         }
 

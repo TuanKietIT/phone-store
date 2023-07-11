@@ -28,6 +28,20 @@
     border: 1px solid #606160;
     cursor: pointer;
 }
+.is-cancel-500{
+    cursor: pointer;
+}
+.is-cancel-500:hover{
+    cursor: pointer;
+    color: rgb(0, 255, 76);
+}
+
+
+.is-bg-grey-500{
+    border: 1px solid #606160;
+    border-radius: 5px;
+}
+
 .is-bg-green-500:focus{
     border: 1px solid #21f681;
     color: rgb(0, 255, 76);

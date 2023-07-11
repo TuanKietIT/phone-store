@@ -63,6 +63,7 @@
             </button>
           </div>
           <a class="flex h-11 items-center justify-center rounded-full bg-white px-2 text-gray-400 hover:bg-sky-400 hover:text-white">
+            <img v-bind:src="'/img/' +form.image" alt="" class="h-8 w-8 rounded-full object-cover"/>
             <span class="pl-2 text-sm">{{ form.name }}</span>
             <ChevronDownIcon class="h-6 w-6 stroke-current" />
           </a>

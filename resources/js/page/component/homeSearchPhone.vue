@@ -12,7 +12,16 @@
     const isLoading = ref(false);
     const fullPage = ref(true);
     const product = ref([]);
-
+    const form = reactive({
+      indexOne: 1,
+      indexTwo: 2,
+      indexThree: 3,
+      indexFour: 4,
+      indexFive: 5,
+      indexSix: 6,
+      indexSeven: 7,
+      indexEight: 8,
+  });
     const route = useRoute();
     const router = useRouter();
     const locationId = route.params.id;
@@ -34,6 +43,54 @@
             }, 2000)
         })
     };
+    const onePrice = () => {
+    axios.get('/api/searchPrice/iphone/' + form.indexOne)
+    .then(response => {
+      router.push({path: '/home/search/phone/'+ form.indexOne})
+    })
+  }
+  const twoPrice = () => {
+    axios.get('/api/searchPrice/iphone/' + form.indexTwo)
+    .then(response => {
+      router.push({path: '/home/search/phone/'+ form.indexTwo})
+    })
+  }
+  const threePrice = () => {
+    axios.get('/api/searchPrice/iphone/' + form.indexThree)
+    .then(response => {
+       router.push({path: '/home/search/phone/'+ form.indexThree})
+    })
+  }
+  const  fourPrice = () => {
+    axios.get('/api/searchPrice/iphone/' + form.indexFour)
+    .then(response => {
+      router.push({path: '/home/search/phone/'+ form.indexFour})
+    })
+  }
+  const fivePrice = () => {
+    axios.get('/api/searchPrice/iphone/' + form.indexFive)
+    .then(response => {
+      router.push({path: '/home/search/phone/'+ form.indexFive})
+    })
+  }
+  const sixPrice = () => {
+    axios.get('/api/searchPrice/iphone/' + form.indexSix)
+    .then(response => {
+       router.push({path: '/home/search/phone/'+ form.indexSix})
+    })
+  }
+  const sevenPrice = () => {
+    axios.get('/api/searchPrice/iphone/' + form.indexSeven)
+    .then(response => {
+      router.push({path: '/home/search/phone/'+ form.indexSeven})
+    })
+  }
+  const eightPrice = () => {
+    axios.get('/api/searchPrice/iphone/' + form.indexEight)
+    .then(response => {
+       router.push({path: '/home/search/phone/'+ form.indexEight})
+    })
+  }
     const phones = ref([]);
     const locations = ref([]);
     
@@ -138,51 +195,51 @@
 
             <span class="text-[18px] my-10 font-medium text-sky-500 focus:outline-none ">Lọc theo giá sản phẩm</span>
             <div class="flex flex-1 flex-col gap-y-2  pt-2 text-[14px]">
+            <div class="flex">
+              <input type="checkbox" @click="onePrice" name="" id="" class="mr-2">
+              <span>Từ 1 - 3 triệu</span>
+            </div>
+            </div>
+            <div class="flex flex-1 flex-col gap-y-2  pt-2 text-[14px]">
                 <div class="flex">
-                <input type="checkbox" name="" id="" class="mr-2">
+                <input type="checkbox" @click="twoPrice" name="" id="" class="mr-2">
                 <span>Từ 3 - 5 triệu</span>
                 </div>
             </div>
             <div class="flex flex-1 flex-col gap-y-2  pt-2 text-[14px]">
                 <div class="flex">
-                <input type="checkbox" name="" id="" class="mr-2">
+                <input type="checkbox" @click="threePrice" name="" id="" class="mr-2">
                 <span>Từ 5 - 8 triệu</span>
                 </div>
             </div>
             <div class="flex flex-1 flex-col gap-y-2  pt-2 text-[14px]">
                 <div class="flex">
-                <input type="checkbox" name="" id="" class="mr-2">
+                <input type="checkbox" @click="fourPrice" name="" id="" class="mr-2">
                 <span>Từ 8 - 10 triệu</span>
                 </div>
             </div>
             <div class="flex flex-1 flex-col gap-y-2  pt-2 text-[14px]">
                 <div class="flex">
-                <input type="checkbox" name="" id="" class="mr-2">
-                <span>Từ 10 - 15 triệu</span>
+                <input type="checkbox" @click="fivePrice" name="" id="" class="mr-2">
+                <span>Từ 10 - 12 triệu</span>
                 </div>
             </div>
             <div class="flex flex-1 flex-col gap-y-2  pt-2 text-[14px]">
                 <div class="flex">
-                <input type="checkbox" name="" id="" class="mr-2">
-                <span>Từ 15 - 20 triệu</span>
+                <input type="checkbox" @click="sixPrice" name="" id="" class="mr-2">
+                <span>Từ 12 - 15 triệu</span>
                 </div>
             </div>
             <div class="flex flex-1 flex-col gap-y-2  pt-2 text-[14px]">
                 <div class="flex">
-                <input type="checkbox" name="" id="" class="mr-2">
-                <span>Từ 20 - 25 triệu</span>
+                <input type="checkbox" @click="sevenPrice" name="" id="" class="mr-2">
+                <span>Từ 15 - 18 triệu</span>
                 </div>
             </div>
             <div class="flex flex-1 flex-col gap-y-2  pt-2 text-[14px]">
                 <div class="flex">
-                <input type="checkbox" name="" id="" class="mr-2">
-                <span>Từ 25 - 30 triệu</span>
-                </div>
-            </div>
-            <div class="flex flex-1 flex-col gap-y-2  pt-2 text-[14px]">
-                <div class="flex">
-                <input type="checkbox" name="" id="" class="mr-2">
-                <span>Trên 30 triệu</span>
+                <input type="checkbox" @click="eightPrice" name="" id="" class="mr-2">
+                <span>Trên 18 triệu</span>
                 </div>
             </div>
         </div>

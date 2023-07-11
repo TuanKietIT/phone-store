@@ -25,6 +25,7 @@ import HomeSearchAccessory  from './page/component/homeSearchAccessory.vue';
 import HomeSearchLaptop  from './page/component/homeSearchLaptop.vue';
 import HomeSearchPhone  from './page/component/homeSearchPhone.vue';
 import HomeSearchPrice  from './page/component/searchPrice.vue';
+import HomeRegister  from './page/auth/register.vue';
 
 import Error from './notFound.vue';
 
@@ -98,83 +99,129 @@ const routes = [
         name: 'HomeSearchPrice',
         component: HomeSearchPrice,
     },
+
+     //home Pages Register
+     {
+        path:'/home/register',
+        name: 'HomeRegister',
+        component: HomeRegister,
+    },
     //admin Category 
     {
         path:'/category',
         name: 'Category',
         component: Category,
+        meta:{
+            requiresAuth:true
+        }
     },
      //admin Category Phone
      {
         path:'/category-phone',
         name: 'Phone',
         component: Phone,
+        meta:{
+            requiresAuth:true
+        }
     },
     //admin Category Laptop
     {
         path:'/category-laptop',
         name: 'Laptop',
         component: Laptop,
+        meta:{
+            requiresAuth:true
+        }
     },
     //admin Category Accessory
     {
         path:'/category-accessory',
         name: 'Accessory',
         component: Accessory,
+        meta:{
+            requiresAuth:true
+        }
     },
     //admin Menu
     {
         path:'/menu',
         name: 'Menu',
         component: Menu,
+        meta:{
+            requiresAuth:true
+        }
     },
      //admin Contact
      {
         path:'/contact',
         name: 'Contact',
         component: Contact,
+        meta:{
+            requiresAuth:true
+        }
     },
     //admin Contact
     {
         path:'/location',
         name: 'Location',
         component: Location,
+        meta:{
+            requiresAuth:true
+        }
     },
     //admin Pages
     {
         path:'/page',
         name: 'Page',
         component: Page,
+        meta:{
+            requiresAuth:true
+        }
     },
     //admin Job Wiki
     {
         path:'/job-wiki',
         name: 'JobWiki',
         component: JobWiki,
+        meta:{
+            requiresAuth:true
+        }
     },
     //admin Wiki
     {
         path:'/wiki',
         name: 'Wiki',
         component: Wiki,
+        meta:{
+            requiresAuth:true
+        }
     },
     //admin Post 
     {
         path:'/product',
         name: 'Product',
         component: Product,
+        meta:{
+            requiresAuth:true
+        }
     },
     //admin News
     {
         path:'/news',
         name: 'News',
         component: News,
+        meta:{
+            requiresAuth:true
+        }
     },
     //admin Post 
     {
         path:'/dashboard',
         name: 'Dashboard',
         component: Dashboard,
+        meta:{
+            requiresAuth:true
+        }
     },
     //admin Login
     {
@@ -201,5 +248,12 @@ const router = createRouter({
     routes
 })
 
-
+router.beforeEach((to,from)=>{
+    if(to.meta.requiresAuth && !localStorage.getItem('token')){
+       return { path: 'admin' }
+    }
+    if(to.meta.requiresAuth == false && localStorage.getItem('token')){
+        return { name: 'Dashboard' }
+    } 
+ })
 export default router
